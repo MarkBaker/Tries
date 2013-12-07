@@ -2,7 +2,7 @@
 
 list(, $searchTerm, $limit) = $argv + array(NULL, '', 8);
 
-include __DIR__ . '/../src/Trie.php';
+include('../src/TrieAutoloader.php');
 
 
 function buildTries($fileName) {
@@ -28,11 +28,12 @@ function buildTries($fileName) {
 
 function searchTries($search, $tries, $limit) {
     $terms = explode('*', $search);
-    if(count($terms) > 2) {
+    $termcount = count($terms);
+    if($termcount > 2) {
         return false;
     }
-        
-    if(strlen($terms[0]) && strlen($terms[1])) {
+
+    if($termcount == 2 && strlen($terms[0]) && strlen($terms[1])) {
         // middle wildcard
         $straight = $tries['trie']->search(strtolower($terms[0]));
         $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])));
@@ -41,7 +42,7 @@ function searchTries($search, $tries, $limit) {
             0,
             $limit
         );
-    } elseif(strlen($terms[1]) ) {
+    } elseif($termcount == 2 && strlen($terms[1]) ) {
         // leading wildcard
         return reverseArray(
             array_slice(
@@ -89,7 +90,7 @@ $searchResult = searchTries($searchTerm, $tries, $limit);
 if (empty($searchResult)) {
     echo 'No matching words found', PHP_EOL;
 } else {
-    foreach($searchResult as $word) {
+    foreach($searchResult as $word => $value) {
         echo $word, PHP_EOL;
     }
 }

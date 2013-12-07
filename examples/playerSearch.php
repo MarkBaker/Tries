@@ -2,7 +2,7 @@
 
 list(, $searchName, $limit) = $argv + array(NULL, '', 8);
 
-include __DIR__ . '/../src/Trie.php';
+include('../src/TrieAutoloader.php');
 
 
 function buildTries($fileName) {
