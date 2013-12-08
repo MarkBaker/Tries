@@ -1,5 +1,7 @@
 <?php
 
+namespace Tries;
+
 /**
  *
  * Trie class
@@ -170,4 +172,3 @@ class Trie {
     }
 
 }
-

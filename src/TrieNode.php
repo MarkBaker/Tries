@@ -1,5 +1,7 @@
 <?php
 
+namespace Tries;
+
 /**
  *
  * TrieNode class

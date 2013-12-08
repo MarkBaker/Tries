@@ -10,7 +10,7 @@ function buildTries($fileName) {
         file_get_contents($fileName)
     );
 
-    $trie = new \Trie();
+    $trie = new \Tries\Trie();
     foreach($playerData as $player) {
         $playerName = $player->surname . ', ' . $player->firstname;
         $trie->add(strtolower($playerName), $player);
