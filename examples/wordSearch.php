@@ -12,8 +12,8 @@ function buildTries($fileName) {
         file_get_contents($fileName)
     );
 
-    $trie = new Trie();
-    $rtrie = new Trie();
+    $trie = new \Tries\Trie();
+    $rtrie = new \Tries\Trie();
 
     $wordCount = 0;
     foreach($wordData as $word) {
