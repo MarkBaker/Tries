@@ -18,7 +18,6 @@ function buildTries($fileName) {
     $wordCount = 0;
     foreach($wordData as $word) {
         $trie->add($word);
-        $trie->add($word);
         $rtrie->add(strrev($word));
         ++$wordCount;
     }
