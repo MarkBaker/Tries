@@ -17,11 +17,14 @@ function buildTries($fileName) {
 
     $wordCount = 0;
     foreach($wordData as $word) {
-        $trie->add($word);
-        $rtrie->add(strrev($word));
-        ++$wordCount;
+        if ($wordCount > 0 && $wordCount % 1000 == 0) echo '.';
+        if ($word > '') {
+            $trie->add($word);
+            $rtrie->add(strrev($word));
+            ++$wordCount;
+        }
     }
-    echo "Added $wordCount words from dictionary", PHP_EOL;
+    echo PHP_EOL, "Added $wordCount words from dictionary", PHP_EOL;
     return array('trie' => $trie, 'rtrie' => $rtrie);
 }
 
