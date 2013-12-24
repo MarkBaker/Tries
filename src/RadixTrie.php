@@ -4,13 +4,13 @@ namespace Tries;
 
 /**
  *
- * Trie class
+ * RadixTrie class
  *
  * @package Trie
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
  */
-class Trie {
+class RadixTrie {
 
     /** 
      * Root-level TrieNode
@@ -24,20 +24,19 @@ class Trie {
     }
 
     /**
-     * Adds a new entry to the Trie
+     * Adds a new entry to the RadixTrie
      * If the specified node already exists, then its value will be overwritten
      *
      * @param   mixed   $key     Key for this node entry
      * @param   mixed   $value   Data Value for this node entry
      * @return  null
      * @throws \InvalidArgumentException if the provided key argument is empty
-     *
      * TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
     public function add($key, $value = null) {
         if ($key > '') {
-            $trieNodeEntry = $this->getTrieNodeByKey($key, true);
+            $trieNodeEntry = $this->getTrieNodeByKey($this->trie, $key, true);
             $trieNodeEntry->valueNode = true;
             $trieNodeEntry->value = $value;
         } else {
@@ -46,16 +45,16 @@ class Trie {
     }
 
     /**
-     * Backtrack toward the root of the Trie, deleting as we go, until we reach a node that we shouldn't delete
+     * Backtrack toward the root of the RadixTrie, deleting as we go, until we reach a node that we shouldn't delete
      *
      * @param   TrieNode   $trieNode   This node entry
      * @param   mixed       $key        The full key for this node entry
      * @return  null
      */
-    private function delete_backtrace(TrieNode $trieNode, $key) {
+    protected function delete_backtrace(TrieNode $trieNode, $key) {
         $previousKey = substr($key, 0, -1);
         $thisChar = substr($key, -1);
-        $previousTrieNode = $this->getTrieNodeByKey($previousKey);
+        $previousTrieNode = $this->getTrieNodeByKey($this->trie, $previousKey);
         unset($previousTrieNode->children[$thisChar]);
 
         if ((count($previousTrieNode->children) == 0) && (!$previousTrieNode->valueNode)) {
@@ -64,13 +63,13 @@ class Trie {
     }
 
     /**
-     * Delete a node in the Trie
+     * Delete a node in the RadixTrie
      *
      * @param   mixed   $key   The key for the node that we want to delete
      * @return  boolean        Success or failure, false if the node didn't exist
      */
     public function delete($key) {
-        $trieNode = $this->getTrieNodeByKey($key);
+        $trieNode = $this->getTrieNodeByKey($this->trie, $key);
         if (!$trieNode) {
             return false;
         }
@@ -86,25 +85,25 @@ class Trie {
     }
 
     /**
-     * Check if a node exists within the Trie
+     * Check if a node exists within the RadixTrie
      *
      * @param   mixed   $key   The key for the node that we want to check
      * @return  boolean
      */
     public function isNode($key) {
-        $trieNode = $this->getTrieNodeByKey($key);
+        $trieNode = $this->getTrieNodeByKey($this->trie, $key);
 
         return $trieNode !== false;
     }
 
     /**
-     * Check if a node exists within the Trie, and is a data node
+     * Check if a node exists within the RadixTrie, and is a data node
      *
      * @param   mixed   $key   The key for the node that we want to check
      * @return  boolean
      */
     public function isMember($key) {
-        $trieNode = $this->getTrieNodeByKey($key);
+        $trieNode = $this->getTrieNodeByKey($this->trie, $key);
 
         return $trieNode !== false && $trieNode->valueNode;
     }
@@ -116,7 +115,7 @@ class Trie {
      * @return  mixed[]           Array of key/value pairs for all child nodes with a value
      */
     public function search($prefix) {
-        $trieNode = $this->getTrieNodeByKey($prefix);
+        $trieNode = $this->getTrieNodeByKey($this->trie, $prefix);
         if (!$trieNode) {
             return false;
         }
@@ -126,29 +125,74 @@ class Trie {
     /**
      * Fetch a node that exists at the specified key, or false if it doesn't exist
      *
-     * @param   mixed     $key       The key for the node that we want to find
-     * @param   boolean   $create    Flag indicating if we should create new nodes in the Trie as we traverse it
-     * @return  TrieNode | boolean   False if the specified node doesn't exist, and not flagged to create
+     * @param   TrieNode  $trieNode   Starting node for the search
+     * @param   mixed     $key        The key for the node that we want to find
+     * @param   boolean   $create     Flag indicating if we should create new nodes in the RadixTrie as we traverse it
+     * @return  TrieNode | boolean    False if the specified node doesn't exist, and not flagged to create
      */
-    private function getTrieNodeByKey($key, $create = false) {
-        $trieNode = $this->trie;
+    protected function getTrieNodeByKey(TrieNode $trieNode, $key, $create = false) {
         $keyLen = strlen($key);
 
-        $i = 0;
-        while ($i < $keyLen) {
-            $character = $key[$i];
-            if (!isset($trieNode->children[$character])) {
-                if ($create) {
-                    $trieNode->children[$character] = new TrieNode();
-                } else {
-                    return false;
-                }
+        if (empty($trieNode->children)) {
+            if ($create) {
+                $trieNode->children[$key] = new TrieNode();
+                return $trieNode->children[$key];
+            } else {
+                return false;
             }
-            $trieNode = $trieNode->children[$character];
+        }
+
+        $i = 1;
+        while ($i <= $keyLen) {
+            $characters = substr($key, 0, $i);
+            if (isset($trieNode->children[$characters])) {
+                $nestedTrieNode = $trieNode->children[$characters];
+                if ($i == $keyLen) {
+                    return $nestedTrieNode;
+                }
+                $key = substr($key, $i);
+                return $this->getTrieNodeByKey($nestedTrieNode, $key, $create);
+            }
             ++$i;
         };
 
-        return $trieNode;
+        if ($i >= $keyLen) {
+            if ($create) {
+                $found = false;
+                foreach($trieNode->children as $trieNodekey => $child) {
+                    $i = 1;
+                    while (substr($key, 0, $i) == substr($trieNodekey, 0, $i)) {
+                        ++$i;
+                        $found = true;
+                        $splitTrieNode = $child;
+                        $splitTrieKey = substr($trieNodekey, 0, $i-1);
+                    }
+                    if ($found) break;
+                }
+                if (!$found) {
+                    $trieNode->children[$key] = new TrieNode();
+                    return $trieNode->children[$key];
+                } else {
+                    --$i;
+                    $newTrieNode = new TrieNode();
+                    $characters = substr($characters, $i);
+                    if ($characters !== false) {
+                        $newTrieNode->children[$characters] = new TrieNode();
+                    }
+                    $newSplitKey = substr($trieNodekey, $i);
+                    $newTrieNode->children[$newSplitKey] = $splitTrieNode;
+                    $trieNode->children[$splitTrieKey] = $newTrieNode;
+                    unset($trieNode->children[$trieNodekey]);
+                    if ($characters !== false) {
+                        return $newTrieNode->children[$characters];
+                    } else {
+                        return $newTrieNode;
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
     }
 
     /**
@@ -158,7 +202,7 @@ class Trie {
      * @param   mixed      $prefix     Full Key for the requested start point
      * @return  mixed[]                Array of key/value pairs for all child nodes with a value
      */
-    private function getAllChildren(TrieNode $trieNode, $prefix) {
+    protected function getAllChildren(TrieNode $trieNode, $prefix) {
         $return = array();
         if ($trieNode->valueNode) {
             $return[$prefix] = $trieNode->value;
@@ -176,4 +220,8 @@ class Trie {
         return $return;
     }
 
+    
+    public function test($key) {
+        return $this->getTrieNodeByKey($this->trie, $key);
+    }
 }

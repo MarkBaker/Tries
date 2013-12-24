@@ -1,11 +1,12 @@
 Tries
 ======
 
-A PHP implementation of the Trie data structure
+A PHP implementation of the Trie and RadixTrie data structures
 
-The /examples folder has two examples to demonstrate its use:
+The /examples folder has two examples to demonstrate their use:
 
  - playerSearch.php
+ - playerSearchRadixTrie.php
 
     allows a search on Wigan Warriors rugby league players based on surname, displaying the record of those that match the entered search criteria
     
@@ -18,6 +19,7 @@ The /examples folder has two examples to demonstrate its use:
                  returned
 
  - wordSearch.php
+ - wordSearchRadixTrie.php
 
     searches an English dictionary for words, displaying those that match the entered search criteria
 
