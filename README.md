@@ -9,10 +9,17 @@ The /examples folder has two examples to demonstrate their use:
  - playerSearchRadixTrie.php
 
     allows a search on Wigan Warriors rugby league players based on surname, displaying the record of those that match the entered search criteria
-    
+
     usage:
+
         php playerSearch \<name> \<limit>
-        
+
+    or
+
+        php playerSearchRadixTrie \<name> \<limit>
+
+    where
+
         name     the first few characters of the surname you want to
                  search for
         limit    optional (default 8) limits the number of results
@@ -24,8 +31,15 @@ The /examples folder has two examples to demonstrate their use:
     searches an English dictionary for words, displaying those that match the entered search criteria
 
     usage:
+
         php wordSearch \<searchterm> \<limit>
-   
+
+    or
+
+        php wordSearchRadixTrie \<searchterm> \<limit>
+
+    where
+
         searchterm   can be a prefix*
                          e.g. "aba*" will return words beginning with "aba"
                      a *suffix
