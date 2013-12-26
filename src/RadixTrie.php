@@ -115,11 +115,58 @@ class RadixTrie {
      * @return  mixed[]           Array of key/value pairs for all child nodes with a value
      */
     public function search($prefix) {
-        $trieNode = $this->getTrieNodeByKey($this->trie, $prefix);
+        $trieNode = $this->findTrieNodeByKey($this->trie, $prefix);
         if (!$trieNode) {
             return false;
         }
-        return $this->getAllChildren($trieNode, $prefix);
+
+        return $this->getAllChildren(
+            $trieNode['node'], 
+            $prefix,
+            substr(
+                $prefix, 
+                0, 
+                strlen($prefix) - strlen($trieNode['key'])
+            )
+        );
+    }
+
+    /**
+     * Fetch a node that exists at the specified key, or the previous node if no exact match exists
+     *
+     * @param   TrieNode  $trieNode   Starting node for the search
+     * @param   mixed     $key        The key for the node that we want to find
+     * @return  TrieNode              The closest match to the specified node
+     */
+    protected function findTrieNodeByKey(TrieNode $trieNode, $key) {
+        $keyLen = strlen($key);
+        if (empty($trieNode->children)) {
+            return array(
+                'node' => $trieNode,
+                'key' => ''
+            );
+        }
+
+        $i = 1;
+        while ($i <= $keyLen) {
+            $characters = substr($key, 0, $i);
+            if (isset($trieNode->children[$characters])) {
+                $nestedTrieNode = $trieNode->children[$characters];
+                if ($i == $keyLen) {
+                    return array(
+                        'node' => $nestedTrieNode,
+                        'key' => ''
+                    );
+                }
+                $key = substr($key, $i);
+                return $this->findTrieNodeByKey($nestedTrieNode, $key);
+            }
+            ++$i;
+        };
+        return array(
+            'node' => $trieNode,
+            'key' => $key
+        );
     }
 
     /**
@@ -198,21 +245,24 @@ class RadixTrie {
     /**
      * Fetch all child nodes with a value below a specified node
      *
-     * @param   TrieNode   $trieNode   Node that is our start point for the retrieval
-     * @param   mixed      $prefix     Full Key for the requested start point
-     * @return  mixed[]                Array of key/value pairs for all child nodes with a value
+     * @param   TrieNode   $trieNode        Node that is our start point for the retrieval
+     * @param   string     $searchPrefix    The prefix that we're searching for, so we can elimi
+     * @param   string     $prefix          Full Key for the requested start point
+     * @return  mixed[]                     Array of key/value pairs for all child nodes with a value
      */
-    protected function getAllChildren(TrieNode $trieNode, $prefix) {
+    protected function getAllChildren(TrieNode $trieNode, $searchPrefix, $prefix) {
         $return = array();
         if ($trieNode->valueNode) {
-            $return[$prefix] = $trieNode->value;
+            if (strpos($prefix, $searchPrefix) === 0) {
+                $return[$prefix] = $trieNode->value;
+            }
         }
 
         if (isset($trieNode->children)) {
-            foreach($trieNode->children as $character => $trie) {
+            foreach($trieNode->children as $characters => $trie) {
                 $return = array_merge(
                     $return,
-                    $this->getAllChildren($trie, $prefix . $character)
+                    $this->getAllChildren($trie, $searchPrefix, $prefix . $characters)
                 );
             }
         }
@@ -220,8 +270,4 @@ class RadixTrie {
         return $return;
     }
 
-    
-    public function test($key) {
-        return $this->getTrieNodeByKey($this->trie, $key);
-    }
 }
