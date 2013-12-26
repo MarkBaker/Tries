@@ -69,17 +69,13 @@ class RadixTrie {
      * @return  boolean        Success or failure, false if the node didn't exist
      */
     public function delete($key) {
-        $trieNode = $this->getTrieNodeByKey($this->trie, $key);
-        if (!$trieNode) {
+        $trieNode = $this->findTrieNodeByKey($this->trie, $key);
+        if ((!$trieNode) || (!$trieNode['node']->valueNode)) {
             return false;
         }
 
-        if (!empty($trieNode->children)) {
-            $trieNode->valueNode = false;
-            $trieNode->value = null;
-        } else {
-            $this->delete_backtrace($trieNode, $key);
-        }
+        $trieNode['node']->valueNode = false;
+        $trieNode['node']->value = null;
 
         return true;
     }
