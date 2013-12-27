@@ -74,9 +74,18 @@ class RadixTrie {
             return false;
         }
 
-        $trieNode['node']->valueNode = false;
-        $trieNode['node']->value = null;
+        // Find the parent node for our current node
+        $parentNode = $this->findTrieNodeByKey($this->trie, substr($key, 0, -1));
+        $newBaseKey = $parentNode['key'] . substr($key, -1);
 
+        // Attach any children of the node we're deleting as children of its parent node
+        //    adjusting the child node keys as necessary
+        foreach($trieNode['node']->children as $childKey => $value) {
+            $parentNode['node']->children[$newBaseKey . $childKey] = $value;
+        }
+        // Remove the node we want to delete
+        unset($parentNode['node']->children[$newBaseKey]);
+        
         return true;
     }
 
