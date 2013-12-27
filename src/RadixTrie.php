@@ -45,24 +45,6 @@ class RadixTrie {
     }
 
     /**
-     * Backtrack toward the root of the RadixTrie, deleting as we go, until we reach a node that we shouldn't delete
-     *
-     * @param   TrieNode   $trieNode   This node entry
-     * @param   mixed       $key        The full key for this node entry
-     * @return  null
-     */
-    protected function delete_backtrace(TrieNode $trieNode, $key) {
-        $previousKey = substr($key, 0, -1);
-        $thisChar = substr($key, -1);
-        $previousTrieNode = $this->getTrieNodeByKey($this->trie, $previousKey);
-        unset($previousTrieNode->children[$thisChar]);
-
-        if ((count($previousTrieNode->children) == 0) && (!$previousTrieNode->valueNode)) {
-            $this->delete_backtrace($previousTrieNode, $previousKey);
-        }
-    }
-
-    /**
      * Delete a node in the RadixTrie
      *
      * @param   mixed   $key   The key for the node that we want to delete
@@ -141,7 +123,8 @@ class RadixTrie {
      *
      * @param   TrieNode  $trieNode   Starting node for the search
      * @param   mixed     $key        The key for the node that we want to find
-     * @return  TrieNode              The closest match to the specified node
+     * @return  mixed[]               ['node'] TrieNode    The closest parent match to the specified node
+     *                                ['key']  string      Partial key from the nearest parent node to the requested key
      */
     protected function findTrieNodeByKey(TrieNode $trieNode, $key) {
         $keyLen = strlen($key);
