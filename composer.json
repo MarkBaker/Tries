@@ -1,6 +1,6 @@
 {
     "name": "MarkBaker/Tries",
-    "description": "PHP Classes for working Trie datastructures",
+    "description": "PHP Classes for working datastructures",
     "keywords": ["Trie Radix Patricia"],
     "homepage": "https://github.com/MarkBaker/Tries",
     "license": "LGPL",

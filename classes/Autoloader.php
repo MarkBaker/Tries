@@ -8,7 +8,7 @@ namespace Tries;
  * Autoloader for Tries classes
  *
  * @package Tries
- * @copyright  Copyright (c) 2012 Mark Baker (https://github.com/MarkBaker/Tries)
+ * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  */
 class Autoloader
