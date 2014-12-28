@@ -10,8 +10,8 @@ namespace Tries;
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
  */
-class RadixTrie implements iTrie {
-
+class RadixTrie implements ITrie
+{
     /** 
      * Root-level TrieNode
      *
@@ -19,7 +19,8 @@ class RadixTrie implements iTrie {
      **/
     private $trie;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->trie = new TrieNode();
     }
 
@@ -34,7 +35,8 @@ class RadixTrie implements iTrie {
      * TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
-    public function add($key, $value = null) {
+    public function add($key, $value = null)
+    {
         if ($key > '') {
             $trieNodeEntry = $this->getTrieNodeByKey($this->trie, $key, true);
             $trieNodeEntry->valueNode = true;
@@ -50,7 +52,8 @@ class RadixTrie implements iTrie {
      * @param   mixed   $key   The key for the node that we want to delete
      * @return  boolean        Success or failure, false if the node didn't exist
      */
-    public function delete($key) {
+    public function delete($key)
+    {
         $trieNode = $this->findTrieNodeByKey($this->trie, $key);
         if ((!$trieNode) || (!$trieNode['node']->valueNode)) {
             return false;
@@ -62,7 +65,7 @@ class RadixTrie implements iTrie {
 
         // Attach any children of the node we're deleting as children of its parent node
         //    adjusting the child node keys as necessary
-        foreach($trieNode['node']->children as $childKey => $value) {
+        foreach ($trieNode['node']->children as $childKey => $value) {
             $parentNode['node']->children[$newBaseKey . $childKey] = $value;
         }
         // Remove the node we want to delete
@@ -77,7 +80,8 @@ class RadixTrie implements iTrie {
      * @param   mixed   $key   The key for the node that we want to check
      * @return  boolean
      */
-    public function isNode($key) {
+    public function isNode($key)
+    {
         $trieNode = $this->getTrieNodeByKey($this->trie, $key);
 
         return $trieNode !== false;
@@ -89,7 +93,8 @@ class RadixTrie implements iTrie {
      * @param   mixed   $key   The key for the node that we want to check
      * @return  boolean
      */
-    public function isMember($key) {
+    public function isMember($key)
+    {
         $trieNode = $this->getTrieNodeByKey($this->trie, $key);
 
         return $trieNode !== false && $trieNode->valueNode;
@@ -101,18 +106,19 @@ class RadixTrie implements iTrie {
      * @param   mixed   $prefix   The key for the node that we want to return
      * @return  mixed[]           Array of key/value pairs for all child nodes with a value
      */
-    public function search($prefix) {
+    public function search($prefix)
+    {
         $trieNode = $this->findTrieNodeByKey($this->trie, $prefix);
         if (!$trieNode) {
             return false;
         }
 
         return $this->getAllChildren(
-            $trieNode['node'], 
+            $trieNode['node'],
             $prefix,
             substr(
-                $prefix, 
-                0, 
+                $prefix,
+                0,
                 strlen($prefix) - strlen($trieNode['key'])
             )
         );
@@ -126,7 +132,8 @@ class RadixTrie implements iTrie {
      * @return  mixed[]               ['node'] TrieNode    The closest parent match to the specified node
      *                                ['key']  string      Partial key from the nearest parent node to the requested key
      */
-    protected function findTrieNodeByKey(TrieNode $trieNode, $key) {
+    protected function findTrieNodeByKey(TrieNode $trieNode, $key)
+    {
         $keyLen = strlen($key);
         if (empty($trieNode->children)) {
             return array(
@@ -165,7 +172,8 @@ class RadixTrie implements iTrie {
      * @param   boolean   $create     Flag indicating if we should create new nodes in the RadixTrie as we traverse it
      * @return  TrieNode | boolean    False if the specified node doesn't exist, and not flagged to create
      */
-    protected function getTrieNodeByKey(TrieNode $trieNode, $key, $create = false) {
+    protected function getTrieNodeByKey(TrieNode $trieNode, $key, $create = false)
+    {
         $keyLen = strlen($key);
 
         if (empty($trieNode->children)) {
@@ -194,7 +202,7 @@ class RadixTrie implements iTrie {
         if ($i >= $keyLen) {
             if ($create) {
                 $found = false;
-                foreach($trieNode->children as $trieNodekey => $child) {
+                foreach ($trieNode->children as $trieNodekey => $child) {
                     $i = 1;
                     while (substr($key, 0, $i) == substr($trieNodekey, 0, $i)) {
                         ++$i;
@@ -202,7 +210,9 @@ class RadixTrie implements iTrie {
                         $splitTrieNode = $child;
                         $splitTrieKey = substr($trieNodekey, 0, $i-1);
                     }
-                    if ($found) break;
+                    if ($found) {
+                        break;
+                    }
                 }
                 if (!$found) {
                     $trieNode->children[$key] = new TrieNode();
@@ -238,7 +248,8 @@ class RadixTrie implements iTrie {
      * @param   string     $prefix          Full Key for the requested start point
      * @return  mixed[]                     Array of key/value pairs for all child nodes with a value
      */
-    protected function getAllChildren(TrieNode $trieNode, $searchPrefix, $prefix) {
+    protected function getAllChildren(TrieNode $trieNode, $searchPrefix, $prefix)
+    {
         $return = array();
         if ($trieNode->valueNode) {
             if (strpos($prefix, $searchPrefix) === 0) {
@@ -247,7 +258,7 @@ class RadixTrie implements iTrie {
         }
 
         if (isset($trieNode->children)) {
-            foreach($trieNode->children as $characters => $trie) {
+            foreach ($trieNode->children as $characters => $trie) {
                 $return = array_merge(
                     $return,
                     $this->getAllChildren($trie, $searchPrefix, $prefix . $characters)
@@ -257,5 +268,4 @@ class RadixTrie implements iTrie {
 
         return $return;
     }
-
 }

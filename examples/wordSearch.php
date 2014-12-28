@@ -2,7 +2,7 @@
 
 list(, $searchTerm, $limit) = $argv + array(NULL, '', 8);
 
-include('../src/TrieAutoloader.php');
+include('../classes/Bootstrap.php');
 
 
 function buildTries($fileName) {

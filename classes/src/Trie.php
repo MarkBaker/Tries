@@ -10,7 +10,8 @@ namespace Tries;
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
  */
-class Trie implements iTrie {
+class Trie implements ITrie
+{
 
     /** 
      * Root-level TrieNode
@@ -19,7 +20,8 @@ class Trie implements iTrie {
      **/
     private $trie;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->trie = new TrieNode();
     }
 
@@ -35,7 +37,8 @@ class Trie implements iTrie {
      * TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
-    public function add($key, $value = null) {
+    public function add($key, $value = null)
+    {
         if ($key > '') {
             $trieNodeEntry = $this->getTrieNodeByKey($key, true);
             $trieNodeEntry->valueNode = true;
@@ -52,14 +55,15 @@ class Trie implements iTrie {
      * @param   mixed       $key        The full key for this node entry
      * @return  null
      */
-    private function delete_backtrace(TrieNode $trieNode, $key) {
+    private function deleteBacktrace(TrieNode $trieNode, $key)
+    {
         $previousKey = substr($key, 0, -1);
         $thisChar = substr($key, -1);
         $previousTrieNode = $this->getTrieNodeByKey($previousKey);
         unset($previousTrieNode->children[$thisChar]);
 
         if ((count($previousTrieNode->children) == 0) && (!$previousTrieNode->valueNode)) {
-            $this->delete_backtrace($previousTrieNode, $previousKey);
+            $this->deleteBacktrace($previousTrieNode, $previousKey);
         }
     }
 
@@ -69,7 +73,8 @@ class Trie implements iTrie {
      * @param   mixed   $key   The key for the node that we want to delete
      * @return  boolean        Success or failure, false if the node didn't exist
      */
-    public function delete($key) {
+    public function delete($key)
+    {
         $trieNode = $this->getTrieNodeByKey($key);
         if (!$trieNode) {
             return false;
@@ -79,7 +84,7 @@ class Trie implements iTrie {
             $trieNode->valueNode = false;
             $trieNode->value = null;
         } else {
-            $this->delete_backtrace($trieNode, $key);
+            $this->deleteBacktrace($trieNode, $key);
         }
 
         return true;
@@ -91,7 +96,8 @@ class Trie implements iTrie {
      * @param   mixed   $key   The key for the node that we want to check
      * @return  boolean
      */
-    public function isNode($key) {
+    public function isNode($key)
+    {
         $trieNode = $this->getTrieNodeByKey($key);
 
         return $trieNode !== false;
@@ -103,7 +109,8 @@ class Trie implements iTrie {
      * @param   mixed   $key   The key for the node that we want to check
      * @return  boolean
      */
-    public function isMember($key) {
+    public function isMember($key)
+    {
         $trieNode = $this->getTrieNodeByKey($key);
 
         return $trieNode !== false && $trieNode->valueNode;
@@ -115,7 +122,8 @@ class Trie implements iTrie {
      * @param   mixed   $prefix   The key for the node that we want to return
      * @return  mixed[]           Array of key/value pairs for all child nodes with a value
      */
-    public function search($prefix) {
+    public function search($prefix)
+    {
         $trieNode = $this->getTrieNodeByKey($prefix);
         if (!$trieNode) {
             return false;
@@ -130,7 +138,8 @@ class Trie implements iTrie {
      * @param   boolean   $create    Flag indicating if we should create new nodes in the Trie as we traverse it
      * @return  TrieNode | boolean   False if the specified node doesn't exist, and not flagged to create
      */
-    private function getTrieNodeByKey($key, $create = false) {
+    private function getTrieNodeByKey($key, $create = false)
+    {
         $trieNode = $this->trie;
         $keyLen = strlen($key);
 
@@ -158,14 +167,15 @@ class Trie implements iTrie {
      * @param   mixed      $prefix     Full Key for the requested start point
      * @return  mixed[]                Array of key/value pairs for all child nodes with a value
      */
-    private function getAllChildren(TrieNode $trieNode, $prefix) {
+    private function getAllChildren(TrieNode $trieNode, $prefix)
+    {
         $return = array();
         if ($trieNode->valueNode) {
             $return[$prefix] = $trieNode->value;
         }
 
         if (isset($trieNode->children)) {
-            foreach($trieNode->children as $character => $trie) {
+            foreach ($trieNode->children as $character => $trie) {
                 $return = array_merge(
                     $return,
                     $this->getAllChildren($trie, $prefix . $character)
@@ -175,5 +185,4 @@ class Trie implements iTrie {
 
         return $return;
     }
-
 }

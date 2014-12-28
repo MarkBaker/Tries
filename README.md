@@ -12,11 +12,11 @@ The /examples folder has two examples to demonstrate their use:
 
     usage:
 
-        php playerSearch \<name> \<limit>
+        php playerSearch <name> <limit>
 
     or
 
-        php playerSearchRadixTrie \<name> \<limit>
+        php playerSearchRadixTrie <name> <limit>
 
     where
 
@@ -32,11 +32,11 @@ The /examples folder has two examples to demonstrate their use:
 
     usage:
 
-        php wordSearch \<searchterm> \<limit>
+        php wordSearch <searchterm> <limit>
 
     or
 
-        php wordSearchRadixTrie \<searchterm> \<limit>
+        php wordSearchRadixTrie <searchterm> <limit>
 
     where
 

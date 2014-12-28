@@ -10,8 +10,8 @@ namespace Tries;
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
  */
-interface iTrie {
-
+interface ITrie
+{
     /**
      * Adds a new entry to the Trie
      * If the specified node already exists, then its value will be overwritten
@@ -57,5 +57,4 @@ interface iTrie {
      * @return  mixed[]           Array of key/value pairs for all child nodes with a value
      */
     public function search($prefix);
-
 }
