@@ -6,7 +6,7 @@ namespace Tries;
  *
  * Trie interface
  *
- * @package Trie
+ * @package Tries
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
  */
@@ -21,7 +21,7 @@ interface ITrie
      * @return  null
      * @throws \InvalidArgumentException if the provided key argument is empty
      *
-     * TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
+     * @TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
     public function add($key, $value = null);
