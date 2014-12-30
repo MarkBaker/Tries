@@ -1,5 +1,6 @@
 {
-    "name": "MarkBaker/Tries",
+    "name": "markbaker/tries",
+    "type": "library",
     "description": "PHP Classes for working datastructures",
     "keywords": ["Trie Radix Patricia"],
     "homepage": "https://github.com/MarkBaker/Tries",
