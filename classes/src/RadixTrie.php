@@ -19,6 +19,9 @@ class RadixTrie implements ITrie
      **/
     private $trie;
 
+    /**
+     * Create a new Radix Trie
+     */
     public function __construct()
     {
         $this->trie = new TrieNode();

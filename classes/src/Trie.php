@@ -20,6 +20,9 @@ class Trie implements ITrie
      **/
     private $trie;
 
+    /**
+     * Create a new Trie
+     */
     public function __construct()
     {
         $this->trie = new TrieNode();
