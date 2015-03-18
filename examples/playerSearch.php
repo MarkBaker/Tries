@@ -5,7 +5,7 @@ list(, $searchName, $limit) = $argv + array(NULL, '', 8);
 include('../classes/Bootstrap.php');
 
 
-function buildTries($fileName) {
+function buildTrie($fileName) {
     $playerData = json_decode(
         file_get_contents($fileName)
     );
@@ -22,7 +22,7 @@ function buildTries($fileName) {
 /* Populate the trie  */
 $startTime = microtime(true);
 
-$tries = buildTries(__DIR__ . '/../data/RugbyData.json');
+$trie = buildTrie(__DIR__ . '/../data/RugbyData.json');
 
 $endTime = microtime(true);
 $callTime = $endTime - $startTime;
@@ -35,25 +35,25 @@ echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' 
 /* Search for the requested names */
 $startTime = microtime(true);
 
-$searchResult = $tries->search(strtolower($searchName));
-if (empty($searchResult)) {
-    echo 'No matches found', PHP_EOL;
-} else {
-    $players = array_slice($searchResult, 0, $limit);
+$players = $trie->search(strtolower($searchName))
+    ->limit($limit);
+if (count($players) > 0) {
     foreach($players as $player) {
         echo sprintf(
             '%s, %s, (%s)', 
             $player->surname, $player->firstname, $player->seasons
         ), PHP_EOL;
         echo sprintf(
-            '    Starts: %d, Substitutions: %d, Appearances: %d', 
-            $player->starts, $player->substitutions, $player->appearances
+            '     Appearances: %d, Starts: %d, Substitutions: %d', 
+            $player->appearances, $player->starts, $player->substitutions
         ), PHP_EOL;
         echo sprintf(
             '    Tries: %d, Goals: %d, Field Goals: %d, Points Scored: %d', 
             $player->tries, $player->goals, $player->fieldgoals, $player->points
         ), PHP_EOL;
     }
+} else {
+    echo 'No matches found', PHP_EOL;
 }
 echo PHP_EOL;
 

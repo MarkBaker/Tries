@@ -18,7 +18,7 @@ class Trie implements ITrie
      *
      * @var   TrieNode[]
      **/
-    private $trie;
+    protected $trie;
 
     /**
      * Create a new Trie
@@ -45,7 +45,11 @@ class Trie implements ITrie
         if ($key > '') {
             $trieNodeEntry = $this->getTrieNodeByKey($key, true);
             $trieNodeEntry->valueNode = true;
-            $trieNodeEntry->value = $value;
+            if ($trieNodeEntry->value === null) {
+                $trieNodeEntry->value = array($value);
+            } else {
+                $trieNodeEntry->value[] = $value;
+            }
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');
         }
@@ -58,7 +62,7 @@ class Trie implements ITrie
      * @param   mixed       $key        The full key for this node entry
      * @return  null
      */
-    private function deleteBacktrace(TrieNode $trieNode, $key)
+    protected function deleteBacktrace(TrieNode $trieNode, $key)
     {
         $previousKey = substr($key, 0, -1);
         $thisChar = substr($key, -1);
@@ -122,14 +126,14 @@ class Trie implements ITrie
     /**
      * Return an array of key/value pairs for nodes matching a specified prefix
      *
-     * @param   mixed   $prefix   The key for the node that we want to return
-     * @return  mixed[]           Array of key/value pairs for all child nodes with a value
+     * @param   mixed   $prefix    The key for the node that we want to return
+     * @return  TrieCollection[]   Collection of TrieEntry key/value pairs for all child nodes with a value
      */
     public function search($prefix)
     {
         $trieNode = $this->getTrieNodeByKey($prefix);
         if (!$trieNode) {
-            return false;
+            return new TrieCollection();
         }
         return $this->getAllChildren($trieNode, $prefix);
     }
@@ -141,7 +145,7 @@ class Trie implements ITrie
      * @param   boolean   $create    Flag indicating if we should create new nodes in the Trie as we traverse it
      * @return  TrieNode | boolean   False if the specified node doesn't exist, and not flagged to create
      */
-    private function getTrieNodeByKey($key, $create = false)
+    protected function getTrieNodeByKey($key, $create = false)
     {
         $trieNode = $this->trie;
         $keyLen = strlen($key);
@@ -149,6 +153,9 @@ class Trie implements ITrie
         $i = 0;
         while ($i < $keyLen) {
             $character = $key[$i];
+            if ($trieNode->children === null) {
+                $trieNode->children = array();
+            }
             if (!isset($trieNode->children[$character])) {
                 if ($create) {
                     $trieNode->children[$character] = new TrieNode();
@@ -168,19 +175,22 @@ class Trie implements ITrie
      *
      * @param   TrieNode   $trieNode   Node that is our start point for the retrieval
      * @param   mixed      $prefix     Full Key for the requested start point
-     * @return  mixed[]                Array of key/value pairs for all child nodes with a value
+     * @return  TrieCollection[]       Collection of TrieEntry key/value pairs for all child nodes with a value
      */
-    private function getAllChildren(TrieNode $trieNode, $prefix)
+    protected function getAllChildren(TrieNode $trieNode, $prefix)
     {
-        $return = array();
+        $return = new TrieCollection();
         if ($trieNode->valueNode) {
-            $return[$prefix] = $trieNode->value;
+            foreach($trieNode->value as $value) {
+                $return->add(
+                    new TrieEntry($prefix, $value)
+                );
+            }
         }
 
         if (isset($trieNode->children)) {
             foreach ($trieNode->children as $character => $trie) {
-                $return = array_merge(
-                    $return,
+                $return->merge(
                     $this->getAllChildren($trie, $prefix . $character)
                 );
             }

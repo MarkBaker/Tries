@@ -19,8 +19,8 @@ function buildTries($fileName) {
     foreach($wordData as $word) {
         if ($wordCount > 0 && $wordCount % 1000 == 0) echo '.';
         if ($word > '') {
-            $trie->add($word);
-            $rtrie->add(strrev($word));
+            $trie->add($word, $word);
+            $rtrie->add(strrev($word), $word);
             ++$wordCount;
         }
     }
@@ -37,38 +37,22 @@ function searchTries($search, $tries, $limit) {
 
     if($termcount == 2 && strlen($terms[0]) && strlen($terms[1])) {
         // middle wildcard
-        $straight = $tries['trie']->search(strtolower($terms[0]));
-        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])));
-        return array_slice(
-            array_intersect_key($straight, reverseArray($reversed)),
-            0,
-            $limit
-        );
+        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])))
+            ->reverseKeys();
+        return $tries['trie']->search(strtolower($terms[0]))
+            ->intersect($reversed)
+            ->limit($limit);
     } elseif($termcount == 2 && strlen($terms[1]) ) {
         // leading wildcard
-        return reverseArray(
-            array_slice(
-                $tries['rtrie']->search(strrev(strtolower($terms[1]))),
-                0,
-                $limit
-            )
-        );
+        return $tries['rtrie']->search(strrev(strtolower($terms[1])))
+            ->reverseKeys()
+            ->limit($limit);
     } else {
         // trailing wildcard
-        return array_slice(
-            $tries['trie']->search(strtolower($terms[0])),
-            0,
-            $limit
-        );
+        return $tries['trie']->search(strtolower($terms[0]))
+            ->limit($limit);
+        return $straight;
     }
-}
-
-function reverseArray($keys) {
-    $return = array();
-    foreach($keys as $key => $value) {
-        $return[strrev($key)] = $value;
-    }
-    return $return;
 }
 
 
@@ -88,13 +72,13 @@ echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' 
 /* Search for the requested terms */
 $startTime = microtime(true);
 
-$searchResult = searchTries($searchTerm, $tries, $limit);
-if (empty($searchResult)) {
-    echo 'No matching words found', PHP_EOL;
-} else {
-    foreach($searchResult as $word => $value) {
+$words = searchTries($searchTerm, $tries, $limit);
+if (count($words) > 0) {
+    foreach($words as $word) {
         echo $word, PHP_EOL;
     }
+} else {
+    echo 'No matches found', PHP_EOL;
 }
 echo PHP_EOL;
 

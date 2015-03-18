@@ -17,7 +17,7 @@ class TrieNode
      *
      * @var   TrieNode[]
      **/
-    public $children = array();
+    public $children;
 
     /**
      * Flag indicating if this node is an end node
