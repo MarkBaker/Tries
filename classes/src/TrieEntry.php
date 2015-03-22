@@ -26,8 +26,12 @@ class TrieEntry
      **/
     public $value;
 
-    public function __construct($prefix, $value) {
-        $this->key = $prefix;
+    public function __construct($value, $key = null) {
+        $this->value = $value;
+        $this->key = $key;
+    }
+
+    public function setKey($key = null) {
         $this->value = $value;
     }
 }

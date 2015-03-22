@@ -182,9 +182,13 @@ class Trie implements ITrie
         $return = new TrieCollection();
         if ($trieNode->valueNode) {
             foreach($trieNode->value as $value) {
-                $return->add(
-                    new TrieEntry($prefix, $value)
-                );
+                if ($value instanceOf TrieEntry) {
+                    $return->add(clone $value);
+                } else {
+                    $return->add(
+                        new TrieEntry($value, $prefix)
+                    );
+                }
             }
         }
 

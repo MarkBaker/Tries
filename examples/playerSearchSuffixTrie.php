@@ -10,7 +10,7 @@ function buildTrie($fileName) {
         file_get_contents($fileName)
     );
 
-    $trie = new \Tries\Trie();
+    $trie = new \Tries\SuffixTrie();
     foreach($playerData as $player) {
         $playerName = $player->surname . ', ' . $player->firstname;
         $trie->add(strtolower($playerName), $player);
@@ -36,6 +36,7 @@ echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' 
 $startTime = microtime(true);
 
 $players = $trie->search(strtolower($searchName))
+    ->sortKeys()
     ->limit($limit);
 if (count($players) > 0) {
     echo count($players), ' result', (count($players) > 0 ? 's' : ''), PHP_EOL, PHP_EOL;

@@ -48,7 +48,7 @@ class TrieCollection implements \Iterator, \Countable {
 
     public function merge(TrieCollection $collection) { 
         foreach($collection as $key => $value) {
-            $this->add(new TrieEntry($key, $value));
+            $this->add(new TrieEntry($value, $key));
         }
     }
 

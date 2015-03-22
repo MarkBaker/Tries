@@ -38,6 +38,8 @@ $startTime = microtime(true);
 $players = $trie->search(strtolower($searchName))
     ->limit($limit);
 if (count($players) > 0) {
+    echo count($players), ' result', (count($players) > 0 ? 's' : ''), PHP_EOL, PHP_EOL;
+
     foreach($players as $player) {
         echo sprintf(
             '%s, %s, (%s)', 
