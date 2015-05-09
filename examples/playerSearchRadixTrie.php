@@ -46,7 +46,7 @@ if (count($players) > 0) {
             $player->surname, $player->firstname, $player->seasons
         ), PHP_EOL;
         echo sprintf(
-            '     Appearances: %d, Starts: %d, Substitutions: %d', 
+            '    Appearances: %d, Starts: %d, Substitutions: %d', 
             $player->appearances, $player->starts, $player->substitutions
         ), PHP_EOL;
         echo sprintf(
