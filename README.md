@@ -1,7 +1,7 @@
 Tries
 ======
 
-A PHP implementation of the Trie and RadixTrie data structures
+A PHP implementation of the Trie, RadixTrie and SuffixTrie data structures
 
 ## Requirements
  * PHP version 5.3.0 or higher
@@ -81,6 +81,7 @@ The /examples folder has two examples to demonstrate their use:
 
  - playerSearch.php
  - playerSearchRadixTrie.php
+ - playerSearchSuffixTrie.php
 
     allows a search on Wigan Warriors rugby league players based on surname, displaying the record of those that match the entered search criteria
 
@@ -95,7 +96,8 @@ The /examples folder has two examples to demonstrate their use:
     where
 
         name     the first few characters of the surname you want to
-                 search for
+                 search for (or characters from anywhere in the name
+                 if using the Suffix Trie search)
         limit    optional (default 8) limits the number of results
                  returned
 
