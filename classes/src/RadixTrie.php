@@ -252,14 +252,14 @@ class RadixTrie implements ITrie
      */
     protected function getAllChildren(TrieNode $trieNode, $searchPrefix, $prefix)
     {
-        $return = new TrieCollection();
+        $collection = new TrieCollection();
         if ($trieNode->valueNode) {
             if (strpos($prefix, $searchPrefix) === 0) {
                 foreach($trieNode->value as $value) {
                     if ($value instanceOf TrieEntry) {
-                        $return->add(clone $value);
+                        $collection->add(clone $value);
                     } else {
-                        $return->add(
+                        $collection->add(
                             new TrieEntry($value, $prefix)
                         );
                     }
@@ -269,12 +269,12 @@ class RadixTrie implements ITrie
 
         if (isset($trieNode->children)) {
             foreach ($trieNode->children as $characters => $trie) {
-                $return->merge(
+                $collection->merge(
                     $this->getAllChildren($trie, $searchPrefix, $prefix . $characters)
                 );
             }
         }
 
-        return $return;
+        return $collection;
     }
 }

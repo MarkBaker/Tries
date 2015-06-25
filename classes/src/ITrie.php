@@ -21,7 +21,7 @@ interface ITrie
      * @return  null
      * @throws \InvalidArgumentException if the provided key argument is empty
      *
-     * @TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
+     * @TODO Option to manage multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
     public function add($key, $value = null);

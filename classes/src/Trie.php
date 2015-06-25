@@ -179,13 +179,13 @@ class Trie implements ITrie
      */
     protected function getAllChildren(TrieNode $trieNode, $prefix)
     {
-        $return = new TrieCollection();
+        $collection = new TrieCollection();
         if ($trieNode->valueNode) {
             foreach($trieNode->value as $value) {
                 if ($value instanceOf TrieEntry) {
-                    $return->add(clone $value);
+                    $collection->add(clone $value);
                 } else {
-                    $return->add(
+                    $collection->add(
                         new TrieEntry($value, $prefix)
                     );
                 }
@@ -194,12 +194,12 @@ class Trie implements ITrie
 
         if (isset($trieNode->children)) {
             foreach ($trieNode->children as $character => $trie) {
-                $return->merge(
+                $collection->merge(
                     $this->getAllChildren($trie, $prefix . $character)
                 );
             }
         }
 
-        return $return;
+        return $collection;
     }
 }

@@ -35,8 +35,11 @@ echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' 
 /* Search for the requested names */
 $startTime = microtime(true);
 
+// Execute the search
 $players = $trie->search(strtolower($searchName))
+    ->sortKeys()
     ->limit($limit);
+// Display the results
 if (count($players) > 0) {
     echo count($players), ' result', (count($players) > 0 ? 's' : ''), PHP_EOL, PHP_EOL;
 
@@ -61,6 +64,7 @@ echo PHP_EOL;
 
 $endTime = microtime(true);
 $callTime = $endTime - $startTime;
+
 
 echo 'Search Time: ', sprintf('%.4f',$callTime), ' s', PHP_EOL;
 echo 'Current Memory: ', sprintf('%.2f',(memory_get_usage(false) / 1024 )), ' k', PHP_EOL;

@@ -13,24 +13,33 @@ namespace Tries;
 class TrieEntry
 {
     /**
-     * Key for this Trie entry
+     * The key for this Trie entry
      *
      * @var   string
      **/
     public $key;
 
     /**
-     * Value for this Trie entry
+     * The Value for this Trie entry
      *
      * @var   mixed
      **/
     public $value;
 
+    /**
+     * @param mixed $value
+     * @param mixed $key
+     **/
     public function __construct($value, $key = null) {
         $this->value = $value;
         $this->key = $key;
     }
 
+    /**
+     * Allows the key for this entry to be reset
+     *
+     * @param mixed $key
+     **/
     public function setKey($key = null) {
         $this->value = $value;
     }

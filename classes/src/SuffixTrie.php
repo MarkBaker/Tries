@@ -22,25 +22,18 @@ class SuffixTrie extends Trie implements ITrie
      * @return  null
      * @throws \InvalidArgumentException if the provided key argument is empty
      *
-     * @TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
+     * @TODO Option to handle multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
     public function add($key, $value = null)
     {
         if ($key > '') {
             $keyLength = strlen($key);
-            $suffix = $key;
             $i = 0;
             $data = new TrieEntry($value, $key);
             while(++$i <= $keyLength) {
-                $trieNodeEntry = $this->getTrieNodeByKey($suffix, true);
-                $trieNodeEntry->valueNode = true;
-                if ($trieNodeEntry->value === null) {
-                    $trieNodeEntry->value = array($data);
-                } else {
-                    $trieNodeEntry->value[] = $data;
-                }
-                $suffix = substr($suffix, 1);
+                parent::add($key, $data);
+                $key = substr($key, 1);
             }
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');
