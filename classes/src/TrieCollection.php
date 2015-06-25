@@ -12,7 +12,7 @@ namespace Tries;
  */
 class TrieCollection implements \Iterator, \Countable {
     private $position = 0;
-    private $entries = array();  
+    private $entries = [];  
 
     public function __construct() {
         $this->position = 0;

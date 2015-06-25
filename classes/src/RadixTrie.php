@@ -45,7 +45,7 @@ class RadixTrie implements ITrie
             $trieNodeEntry = $this->getTrieNodeByKey($this->trie, $key, true);
             $trieNodeEntry->valueNode = true;
             if ($trieNodeEntry->value === null) {
-                $trieNodeEntry->value = array($value);
+                $trieNodeEntry->value = [$value];
             } else {
                 $trieNodeEntry->value[] = $value;
             }
@@ -150,20 +150,20 @@ class RadixTrie implements ITrie
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
                 if ($i == $keyLen) {
-                    return array(
+                    return [
                         'node' => $nestedTrieNode,
                         'key' => ''
-                    );
+                    ];
                 }
                 $key = substr($key, $i);
                 return $this->findTrieNodeByKey($nestedTrieNode, $key);
             }
             ++$i;
         };
-        return array(
+        return [
             'node' => $trieNode,
             'key' => $key
-        );
+        ];
     }
 
     /**

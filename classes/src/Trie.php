@@ -46,7 +46,7 @@ class Trie implements ITrie
             $trieNodeEntry = $this->getTrieNodeByKey($key, true);
             $trieNodeEntry->valueNode = true;
             if ($trieNodeEntry->value === null) {
-                $trieNodeEntry->value = array($value);
+                $trieNodeEntry->value = [$value];
             } else {
                 $trieNodeEntry->value[] = $value;
             }
@@ -152,9 +152,9 @@ class Trie implements ITrie
 
         $i = 0;
         while ($i < $keyLen) {
-            $character = $key[$i];
+            $character = $key[$i++];
             if ($trieNode->children === null) {
-                $trieNode->children = array();
+                $trieNode->children = [];
             }
             if (!isset($trieNode->children[$character])) {
                 if ($create) {
@@ -164,7 +164,6 @@ class Trie implements ITrie
                 }
             }
             $trieNode = $trieNode->children[$character];
-            ++$i;
         };
 
         return $trieNode;
