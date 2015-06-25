@@ -28,13 +28,11 @@ class SuffixTrie extends Trie implements ITrie
     public function add($key, $value = null)
     {
         if ($key > '') {
-            $keyLength = strlen($key);
-            $i = 0;
             $data = new TrieEntry($value, $key);
-            while(++$i <= $keyLength) {
+            do {
                 parent::add($key, $data);
                 $key = substr($key, 1);
-            }
+            } while ($key > '');
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');
         }
