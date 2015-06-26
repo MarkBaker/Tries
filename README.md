@@ -93,6 +93,10 @@ The /examples folder has two examples to demonstrate their use:
 
         php playerSearchRadixTrie <name> <limit>
 
+    or
+
+        php playerSearchSuffixTrie <name> <limit>
+
     where
 
         name     the first few characters of the surname you want to

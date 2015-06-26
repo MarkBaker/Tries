@@ -112,7 +112,7 @@ class RadixTrie implements ITrie
      * Return an array of key/value pairs for nodes matching a specified prefix
      *
      * @param   mixed   $prefix     The key for the node that we want to return
-     * @return  TrieCollection[]    Collection of TrieEntry key/value pairs for all child nodes with a value
+     * @return  TrieCollection    A collection of Trie Entries for all child nodes that match the prefix value
      */
     public function search($prefix)
     {
