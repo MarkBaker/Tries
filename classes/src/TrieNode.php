@@ -17,7 +17,7 @@ class TrieNode
      *
      * @var   TrieNode[]
      **/
-    public $children;
+    public $children = array();
 
     /**
      * Flag indicating if this node is an end node
@@ -31,5 +31,5 @@ class TrieNode
      *
      * @var   mixed
      **/
-    public $value;
+    public $value = null;
 }

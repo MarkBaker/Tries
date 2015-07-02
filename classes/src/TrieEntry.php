@@ -41,6 +41,6 @@ class TrieEntry
      * @param mixed $key
      **/
     public function setKey($key = null) {
-        $this->value = $value;
+        $this->key = $key;
     }
 }
