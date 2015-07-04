@@ -12,14 +12,14 @@ namespace Tries;
  */
 class TrieCollection implements \Iterator, \Countable {
     private $position = 0;
-    private $entries = [];  
+    private $entries = [];
 
     public function __construct() {
         $this->position = 0;
     }
 
-    public function count() { 
-        return count($this->entries); 
+    public function count() {
+        return count($this->entries);
     }
 
     function rewind() {
@@ -42,11 +42,11 @@ class TrieCollection implements \Iterator, \Countable {
         return isset($this->entries[$this->position]);
     }
 
-    public function add(TrieEntry $value) { 
+    public function add(TrieEntry $value) {
         $this->entries[] = $value;
     }
 
-    public function merge(TrieCollection $collection) { 
+    public function merge(TrieCollection $collection) {
         foreach($collection as $key => $value) {
             $this->add(new TrieEntry($value, $key));
         }

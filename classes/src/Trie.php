@@ -17,7 +17,7 @@ class Trie implements ITrie
      * Root-level TrieNode
      *
      * @var   TrieNode[]
-     **/
+     */
     protected $trie;
 
     /**

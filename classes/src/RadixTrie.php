@@ -78,7 +78,7 @@ class RadixTrie implements ITrie
         }
         // Remove the node we want to delete
         unset($parentNode['node']->children[$newBaseKey]);
-        
+
         return true;
     }
 
