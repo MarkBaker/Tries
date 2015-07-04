@@ -18,7 +18,7 @@ class Trie implements ITrie
      *
      * @var   TrieNode[]
      */
-    protected $trie;
+    protected $trie = null;
 
     /**
      * Create a new Trie

@@ -17,14 +17,14 @@ class TrieEntry
      *
      * @var   string
      **/
-    public $key;
+    public $key = null;
 
     /**
      * The Value for this Trie entry
      *
      * @var   mixed
      **/
-    public $value;
+    public $value = null;
 
     /**
      * @param mixed $value
