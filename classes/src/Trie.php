@@ -17,7 +17,7 @@ class Trie implements ITrie
      * Root-level TrieNode
      *
      * @var   TrieNode[]
-     **/
+     */
     protected $trie;
 
     /**
@@ -46,7 +46,7 @@ class Trie implements ITrie
             $trieNodeEntry = $this->getTrieNodeByKey($key, true);
             $trieNodeEntry->valueNode = true;
             if ($trieNodeEntry->value === null) {
-                $trieNodeEntry->value = array($value);
+                $trieNodeEntry->value = [$value];
             } else {
                 $trieNodeEntry->value[] = $value;
             }
@@ -127,7 +127,7 @@ class Trie implements ITrie
      * Return an array of key/value pairs for nodes matching a specified prefix
      *
      * @param   mixed   $prefix    The key for the node that we want to return
-     * @return  TrieCollection[]   Collection of TrieEntry key/value pairs for all child nodes with a value
+     * @return  TrieCollection    A collection of Trie Entries for all child nodes that match the prefix value
      */
     public function search($prefix)
     {
@@ -152,9 +152,9 @@ class Trie implements ITrie
 
         $i = 0;
         while ($i < $keyLen) {
-            $character = $key[$i];
+            $character = $key[$i++];
             if ($trieNode->children === null) {
-                $trieNode->children = array();
+                $trieNode->children = [];
             }
             if (!isset($trieNode->children[$character])) {
                 if ($create) {
@@ -164,7 +164,6 @@ class Trie implements ITrie
                 }
             }
             $trieNode = $trieNode->children[$character];
-            ++$i;
         };
 
         return $trieNode;

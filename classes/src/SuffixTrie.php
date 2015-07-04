@@ -14,15 +14,13 @@ class SuffixTrie extends Trie implements ITrie
 {
 
     /**
-     * Adds a new entry to the Trie
-     * If the specified node already exists, then its value will be overwritten
-     *
+     * {@inheritdoc}
      * @param   mixed   $key     Key for this node entry
      * @param   mixed   $value   Data Value for this node entry
      * @return  null
      * @throws \InvalidArgumentException if the provided key argument is empty
      *
-     * @TODO Option to handle multiple values with the same key, perhaps a flag indicating overwrite or
+     * @TODO Option to allow multiple values with the same key, perhaps a flag indicating overwrite or
      *          allow duplicate entries
      */
     public function add($key, $value = null)

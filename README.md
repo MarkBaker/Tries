@@ -4,7 +4,7 @@ Tries
 A PHP implementation of the Trie, RadixTrie and SuffixTrie data structures
 
 ## Requirements
- * PHP version 5.3.0 or higher
+ * PHP version 5.4.0 or higher
 
 
 ## Installation
@@ -92,6 +92,10 @@ The /examples folder has two examples to demonstrate their use:
     or
 
         php playerSearchRadixTrie <name> <limit>
+
+    or
+
+        php playerSearchSuffixTrie <name> <limit>
 
     where
 
