@@ -20,16 +20,14 @@ class TrieNode
     public $children = [];
 
     /**
-     * Flag indicating if this node is an end node
-     *
-     * @var   boolean
-     **/
-    public $valueNode = false;
-
-    /**
      * Data value (empty unless this is an end node)
      *
      * @var   mixed
      **/
     public $value = null;
+
+    public function isValueNode()
+    {
+        return !empty($this->value);
+    }
 }
