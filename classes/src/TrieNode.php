@@ -26,8 +26,4 @@ class TrieNode
      **/
     public $value = null;
 
-    public function isValueNode()
-    {
-        return !empty($this->value);
-    }
 }

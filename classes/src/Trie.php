@@ -68,7 +68,7 @@ class Trie implements ITrie
         $previousTrieNode = $this->getTrieNodeByKey($previousKey);
         unset($previousTrieNode->children[$thisChar]);
 
-        if ((count($previousTrieNode->children) == 0) && (!$previousTrieNode->isValueNode())) {
+        if ((count($previousTrieNode->children) == 0) && ($previousTrieNode->value === null)) {
             $this->deleteBacktrace($previousTrieNode, $previousKey);
         }
     }
@@ -118,7 +118,7 @@ class Trie implements ITrie
     {
         $trieNode = $this->getTrieNodeByKey($key);
 
-        return $trieNode !== false && $trieNode->isValueNode();
+        return $trieNode !== false && $trieNode->value !== null;
     }
 
     /**
@@ -151,9 +151,6 @@ class Trie implements ITrie
         $i = 0;
         while ($i < $keyLen) {
             $character = $key[$i++];
-            if ($trieNode->children === null) {
-                $trieNode->children = [];
-            }
             if (!isset($trieNode->children[$character])) {
                 if ($create) {
                     $trieNode->children[$character] = new TrieNode();
@@ -177,7 +174,7 @@ class Trie implements ITrie
     protected function getAllChildren(TrieNode $trieNode, $prefix)
     {
         $collection = new TrieCollection();
-        if ($trieNode->isValueNode()) {
+        if ($trieNode->value !== null) {
             foreach($trieNode->value as $value) {
                 if ($value instanceOf TrieEntry) {
                     $collection->add(clone $value);

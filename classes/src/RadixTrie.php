@@ -62,7 +62,7 @@ class RadixTrie implements ITrie
     public function delete($key)
     {
         $trieNode = $this->findTrieNodeByKey($this->trie, $key);
-        if ((!$trieNode) || (!$trieNode['node']->isValueNode())) {
+        if ((!$trieNode) || ($trieNode['node']->value !== null)) {
             return false;
         }
 
@@ -104,7 +104,7 @@ class RadixTrie implements ITrie
     {
         $trieNode = $this->getTrieNodeByKey($this->trie, $key);
 
-        return $trieNode !== false && $trieNode->isValueNode();
+        return $trieNode !== false && $trieNode->value !== null;
     }
 
     /**
@@ -252,9 +252,8 @@ class RadixTrie implements ITrie
     protected function getAllChildren(TrieNode $trieNode, $searchPrefix, $prefix)
     {
         $collection = new TrieCollection();
-        if ($trieNode->isValueNode()) {
+        if ($trieNode->value !== null) {
             if (strpos($prefix, $searchPrefix) === 0) {
-//                var_dump($trieNode); die();
                 foreach($trieNode->value as $value) {
                     if ($value instanceOf TrieEntry) {
                         $collection->add(clone $value);
