@@ -2,7 +2,8 @@
 
 list(, $searchTerm, $limit) = $argv + array(NULL, '', 8);
 
-include('../classes/Bootstrap.php');
+// Include the autoloader
+include(__DIR__ . '/../classes/Bootstrap.php');
 
 
 function buildTries($fileName) {
@@ -19,8 +20,8 @@ function buildTries($fileName) {
     foreach($wordData as $word) {
         if ($wordCount > 0 && $wordCount % 1000 == 0) echo '.';
         if ($word > '') {
-            $trie->add($word, $word);
-            $rtrie->add(strrev($word), $word);
+            $trie->add($word);
+            $rtrie->add(strrev($word));
             ++$wordCount;
         }
     }
@@ -37,21 +38,19 @@ function searchTries($search, $tries, $limit) {
 
     if($termcount == 2 && strlen($terms[0]) && strlen($terms[1])) {
         // middle wildcard
-        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])))
-            ->reverseKeys();
-        return $tries['trie']->search(strtolower($terms[0]))
-            ->intersect($reversed)
-            ->limit($limit);
+        $straight = $tries['trie']->search(strtolower($terms[0]));
+        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])));
+        $straight->intersect($reversed->reverseKeys());
+        return $straight->limit($limit);
     } elseif($termcount == 2 && strlen($terms[1]) ) {
         // leading wildcard
-        return $tries['rtrie']->search(strrev(strtolower($terms[1])))
-            ->reverseKeys()
-            ->limit($limit);
+        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])));
+        $reversed->reverseKeys();
+        return $reversed->limit($limit);
     } else {
         // trailing wildcard
-        return $tries['trie']->search(strtolower($terms[0]))
-            ->limit($limit);
-        return $straight;
+        $straight = $tries['trie']->search(strtolower($terms[0]));
+        return $straight->limit($limit);
     }
 }
 
@@ -66,19 +65,19 @@ $callTime = $endTime - $startTime;
 
 echo 'Load Time: ', sprintf('%.4f',$callTime), ' s', PHP_EOL;
 echo 'Current Memory: ', sprintf('%.2f',(memory_get_usage(false) / 1024 )), ' k', PHP_EOL;
-echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' k', PHP_EOL;
+echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' k', PHP_EOL, PHP_EOL;
 
 
 /* Search for the requested terms */
 $startTime = microtime(true);
 
-$words = searchTries($searchTerm, $tries, $limit);
-if (count($words) > 0) {
-    foreach($words as $word) {
+$searchResult = searchTries($searchTerm, $tries, $limit);
+if ($searchResult->count() == 0) {
+    echo 'No matching words found', PHP_EOL;
+} else {
+    foreach($searchResult as $word => $value) {
         echo $word, PHP_EOL;
     }
-} else {
-    echo 'No matches found', PHP_EOL;
 }
 echo PHP_EOL;
 

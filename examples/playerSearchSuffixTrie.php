@@ -2,7 +2,8 @@
 
 list(, $searchName, $limit) = $argv + array(NULL, '', 8);
 
-include('../classes/Bootstrap.php');
+// Include the autoloader
+include(__DIR__ . '/../classes/Bootstrap.php');
 
 
 function buildTrie($fileName) {
