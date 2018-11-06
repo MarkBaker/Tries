@@ -3,6 +3,10 @@ Tries
 
 A PHP implementation of the Trie, RadixTrie and SuffixTrie data structures
 
+Master: [![Build Status](https://travis-ci.org/MarkBaker/Tries.png?branch=master)](http://travis-ci.org/MarkBaker/Tries)
+
+Develop: [![Build Status](https://travis-ci.org/MarkBaker/Tries.png?branch=develop)](http://travis-ci.org/MarkBaker/Tries)
+
 ## Requirements
  * PHP version 5.4.0 or higher
 
