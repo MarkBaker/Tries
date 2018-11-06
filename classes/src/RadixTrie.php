@@ -186,30 +186,30 @@ class RadixTrie implements ITrie
             }
         }
 
-        $i = 1;
-        while ($i <= $keyLen) {
-            $characters = substr($key, 0, $i);
+        $index = 1;
+        while ($index <= $keyLen) {
+            $characters = substr($key, 0, $index);
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
-                if ($i == $keyLen) {
+                if ($index == $keyLen) {
                     return $nestedTrieNode;
                 }
-                $key = substr($key, $i);
+                $key = substr($key, $index);
                 return $this->getTrieNodeByKey($nestedTrieNode, $key, $create);
             }
-            ++$i;
+            ++$index;
         };
 
-        if ($i >= $keyLen) {
+        if ($index >= $keyLen) {
             if ($create) {
                 $found = false;
                 foreach ($trieNode->children as $trieNodekey => $child) {
-                    $i = 1;
-                    while (substr($key, 0, $i) == substr($trieNodekey, 0, $i)) {
-                        ++$i;
+                    $index = 1;
+                    while (substr($key, 0, $index) == substr($trieNodekey, 0, $index)) {
+                        ++$index;
                         $found = true;
                         $splitTrieNode = $child;
-                        $splitTrieKey = substr($trieNodekey, 0, $i-1);
+                        $splitTrieKey = substr($trieNodekey, 0, $index-1);
                     }
                     if ($found) {
                         break;
@@ -219,13 +219,13 @@ class RadixTrie implements ITrie
                     $trieNode->children[$key] = new TrieNode();
                     return $trieNode->children[$key];
                 } else {
-                    --$i;
+                    --$index;
                     $newTrieNode = new TrieNode();
-                    $characters = substr($characters, $i);
+                    $characters = substr($characters, $index);
                     if ($characters !== false) {
                         $newTrieNode->children[$characters] = new TrieNode();
                     }
-                    $newSplitKey = substr($trieNodekey, $i);
+                    $newSplitKey = substr($trieNodekey, $index);
                     $newTrieNode->children[$newSplitKey] = $splitTrieNode;
                     $trieNode->children[$splitTrieKey] = $newTrieNode;
                     unset($trieNode->children[$trieNodekey]);
