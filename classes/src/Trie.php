@@ -57,11 +57,10 @@ class Trie implements ITrie
     /**
      * Backtrack toward the root of the Trie, deleting as we go, until we reach a node that we shouldn't delete
      *
-     * @param   TrieNode   $trieNode   This node entry
      * @param   mixed       $key        The full key for this node entry
      * @return  null
      */
-    protected function deleteBacktrace(TrieNode $trieNode, $key)
+    private function deleteBacktrace($key)
     {
         $previousKey = substr($key, 0, -1);
         $thisChar = substr($key, -1);
@@ -69,7 +68,7 @@ class Trie implements ITrie
         unset($previousTrieNode->children[$thisChar]);
 
         if ((count($previousTrieNode->children) == 0) && ($previousTrieNode->value === null)) {
-            $this->deleteBacktrace($previousTrieNode, $previousKey);
+            $this->deleteBacktrace($previousKey);
         }
     }
 
@@ -89,7 +88,7 @@ class Trie implements ITrie
         if (!empty($trieNode->children)) {
             $trieNode->value = null;
         } else {
-            $this->deleteBacktrace($trieNode, $key);
+            $this->deleteBacktrace($key);
         }
 
         return true;
@@ -143,14 +142,14 @@ class Trie implements ITrie
      * @param   boolean   $create    Flag indicating if we should create new nodes in the Trie as we traverse it
      * @return  TrieNode | boolean   False if the specified node doesn't exist, and not flagged to create
      */
-    protected function getTrieNodeByKey($key, $create = false)
+    private function getTrieNodeByKey($key, $create = false)
     {
         $trieNode = $this->trie;
         $keyLen = strlen($key);
 
-        $i = 0;
-        while ($i < $keyLen) {
-            $character = $key[$i++];
+        $index = 0;
+        while ($index < $keyLen) {
+            $character = $key[$index++];
             if (!isset($trieNode->children[$character])) {
                 if ($create) {
                     $trieNode->children[$character] = new TrieNode();
@@ -171,7 +170,7 @@ class Trie implements ITrie
      * @param   mixed      $prefix     Full Key for the requested start point
      * @return  TrieCollection[]       Collection of TrieEntry key/value pairs for all child nodes with a value
      */
-    protected function getAllChildren(TrieNode $trieNode, $prefix)
+    private function getAllChildren(TrieNode $trieNode, $prefix)
     {
         $collection = new TrieCollection();
         if ($trieNode->value !== null) {

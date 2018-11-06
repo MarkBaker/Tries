@@ -76,8 +76,8 @@ class TrieCollection implements \Iterator, \Countable
     {
         usort(
             $this->entries,
-            function ($a, $b) {
-                return strnatcasecmp($a->key, $b->key);
+            function ($valueA, $valueB) {
+                return strnatcasecmp($valueA->key, $valueB->key);
             }
         );
         return $this;

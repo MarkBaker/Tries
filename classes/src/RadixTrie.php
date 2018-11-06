@@ -143,21 +143,21 @@ class RadixTrie implements ITrie
     {
         $keyLen = strlen($key);
 
-        $i = 1;
-        while ($i <= $keyLen) {
-            $characters = substr($key, 0, $i);
+        $index = 1;
+        while ($index <= $keyLen) {
+            $characters = substr($key, 0, $index);
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
-                if ($i == $keyLen) {
+                if ($index == $keyLen) {
                     return [
                         'node' => $nestedTrieNode,
                         'key' => ''
                     ];
                 }
-                $key = substr($key, $i);
+                $key = substr($key, $index);
                 return $this->findTrieNodeByKey($nestedTrieNode, $key);
             }
-            ++$i;
+            ++$index;
         };
         return [
             'node' => $trieNode,
