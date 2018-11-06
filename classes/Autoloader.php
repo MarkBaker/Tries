@@ -35,17 +35,17 @@ class Autoloader
     public static function Load($pClassName) {
         if ((class_exists($pClassName, FALSE)) || (strpos($pClassName, 'Tries\\') !== 0)) {
             // Either already loaded, or not a Trie class request
-            return FALSE;
+            return false;
         }
 
         $pClassFilePath = __DIR__ . DIRECTORY_SEPARATOR .
                           'src' . DIRECTORY_SEPARATOR .
-                          str_replace('Tries\\', '', $pClassName) .
+                          str_replace(['Tries\\', '\\'], ['', '/'], $pClassName) .
                           '.php';
 
-        if ((file_exists($pClassFilePath) === FALSE) || (is_readable($pClassFilePath) === FALSE)) {
+        if ((file_exists($pClassFilePath) === false) || (is_readable($pClassFilePath) === false)) {
             // Can't load
-            return FALSE;
+            return false;
         }
         require($pClassFilePath);
     }

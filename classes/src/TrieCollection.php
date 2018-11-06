@@ -10,49 +10,60 @@ namespace Tries;
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
  * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
  */
-class TrieCollection implements \Iterator, \Countable {
+class TrieCollection implements \Iterator, \Countable
+{
     private $position = 0;
     private $entries = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->position = 0;
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->entries);
     }
 
-    function rewind() {
+    public function rewind()
+    {
         $this->position = 0;
     }
 
-    function current() {
+    public function current()
+    {
         return $this->entries[$this->position]->value;
     }
 
-    function key() {
+    public function key()
+    {
         return $this->entries[$this->position]->key;
     }
 
-    function next() {
+    public function next()
+    {
         ++$this->position;
     }
 
-    function valid() {
+    public function valid()
+    {
         return isset($this->entries[$this->position]);
     }
 
-    public function add(TrieEntry $value) {
+    public function add(TrieEntry $value)
+    {
         $this->entries[] = $value;
     }
 
-    public function merge(TrieCollection $collection) {
-        foreach($collection as $key => $value) {
+    public function merge(TrieCollection $collection)
+    {
+        foreach ($collection as $key => $value) {
             $this->add(new TrieEntry($value, $key));
         }
     }
 
-    public function limit($quantity=10) {
+    public function limit($quantity = 10)
+    {
         $this->entries = array_slice(
             $this->entries,
             0,
@@ -61,7 +72,8 @@ class TrieCollection implements \Iterator, \Countable {
         return $this;
     }
 
-    public function sortKeys() {
+    public function sortKeys()
+    {
         usort(
             $this->entries,
             function ($a, $b) {
@@ -71,7 +83,8 @@ class TrieCollection implements \Iterator, \Countable {
         return $this;
     }
 
-    public function reverseKeys() {
+    public function reverseKeys()
+    {
         array_walk(
             $this->entries,
             function (&$value) {
@@ -82,7 +95,8 @@ class TrieCollection implements \Iterator, \Countable {
         return $this;
     }
 
-    public function getKeys() {
+    public function getKeys()
+    {
         return array_map(
             function ($value) {
                 return $value->key;
@@ -91,12 +105,13 @@ class TrieCollection implements \Iterator, \Countable {
         );
     }
 
-    public function intersect(TrieCollection $collection) {
+    public function intersect(TrieCollection $collection)
+    {
         $keys = $collection->getKeys();
         $this->entries = array_values(
             array_filter(
                 $this->entries,
-                function($value) use ($keys) {
+                function ($value) use ($keys) {
                     return in_array($value->key, $keys);
                 }
             )

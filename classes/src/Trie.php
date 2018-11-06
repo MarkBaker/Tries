@@ -175,8 +175,8 @@ class Trie implements ITrie
     {
         $collection = new TrieCollection();
         if ($trieNode->value !== null) {
-            foreach($trieNode->value as $value) {
-                if ($value instanceOf TrieEntry) {
+            foreach ($trieNode->value as $value) {
+                if ($value instanceof TrieEntry) {
                     $collection->add(clone $value);
                 } else {
                     $collection->add(

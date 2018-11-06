@@ -25,5 +25,4 @@ class TrieNode
      * @var   mixed
      **/
     public $value = null;
-
 }

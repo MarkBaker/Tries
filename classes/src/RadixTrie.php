@@ -254,8 +254,8 @@ class RadixTrie implements ITrie
         $collection = new TrieCollection();
         if ($trieNode->value !== null) {
             if (strpos($prefix, $searchPrefix) === 0) {
-                foreach($trieNode->value as $value) {
-                    if ($value instanceOf TrieEntry) {
+                foreach ($trieNode->value as $value) {
+                    if ($value instanceof TrieEntry) {
                         $collection->add(clone $value);
                     } else {
                         $collection->add(

@@ -2,14 +2,6 @@
 
 namespace Tries;
 
-/**
- *
- * TrieEntry class
- *
- * @package Tries
- * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
- * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
- */
 class TrieEntry
 {
     /**
@@ -30,7 +22,8 @@ class TrieEntry
      * @param mixed $value
      * @param mixed $key
      **/
-    public function __construct($value, $key = null) {
+    public function __construct($value, $key = null)
+    {
         $this->value = $value;
         $this->key = $key;
     }
@@ -40,7 +33,13 @@ class TrieEntry
      *
      * @param mixed $key
      **/
-    public function setKey($key = null) {
+    public function setKey($key = null)
+    {
         $this->key = $key;
+    }
+
+    public function __toString()
+    {
+        return $this->value;
     }
 }
