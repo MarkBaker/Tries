@@ -76,7 +76,7 @@ Fork this library!
 
 
 ## License
-Tries is licensed under [LGPL (GNU LESSER GENERAL PUBLIC LICENSE)](https://github.com/MarkBaker/Tries/blob/master/LICENSE.md)
+Tries is licensed under an [MIT LICENSE)](https://github.com/MarkBaker/Tries/blob/master/LICENSE.md)
 
 
 ## Examples

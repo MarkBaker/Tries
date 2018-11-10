@@ -8,25 +8,25 @@ class TrieEntryTest extends TestCase
 {
     public function testInstantiate()
     {
-        $value = 'Hello';
+        $key = 'Hello';
         
-        $trieEntryObject = new TrieEntry($value);
+        $trieEntryObject = new TrieEntry($key);
         //    Must return an object...
         $this->assertTrue(is_object($trieEntryObject));
         //    ... of the correct type
         $this->assertTrue(is_a($trieEntryObject, __NAMESPACE__ . '\TrieEntry'));
 
-        $this->assertEquals($value, $trieEntryObject->value);
+        $this->assertEquals($key, $trieEntryObject->key);
     }
 
     public function testInstantiateWithKeyArgument()
     {
-        $value = 'Hello';
-        $key = 'World';
+        $key = 'Hello';
+        $value = 'World';
 
-        $trieEntryObject = new TrieEntry($value, $key);
+        $trieEntryObject = new TrieEntry($key, $value);
 
-        $this->assertEquals($value, $trieEntryObject->value);
         $this->assertEquals($key, $trieEntryObject->key);
+        $this->assertEquals($value, $trieEntryObject->value);
     }
 }
