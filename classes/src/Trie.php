@@ -1,6 +1,7 @@
 <?php
 
 namespace Tries;
+
 use Generator;
 
 /**
@@ -183,7 +184,7 @@ class Trie implements ITrie
         }
 
         if (isset($trieNode->children)) {
-            foreach($trieNode->children as $key => $child) {
+            foreach ($trieNode->children as $key => $child) {
                 yield from $this->getAllChildren($child, $prefix . $key);
             }
         }

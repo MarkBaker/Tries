@@ -254,8 +254,8 @@ class RadixTrie implements ITrie
         }
 
         if (isset($trieNode->children)) {
-            foreach($trieNode->children as $key => $child) {
-                yield from $this->getAllChildren($child,  $prefix . $key);
+            foreach ($trieNode->children as $key => $child) {
+                yield from $this->getAllChildren($child, $prefix . $key);
             }
         }
     }
