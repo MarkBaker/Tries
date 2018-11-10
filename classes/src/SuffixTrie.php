@@ -2,6 +2,8 @@
 
 namespace Tries;
 
+use Generator;
+
 /**
  *
  * Trie class
@@ -26,13 +28,35 @@ class SuffixTrie extends Trie implements ITrie
     public function add($key, $value = null)
     {
         if ($key > '') {
-            $data = new TrieEntry($value, $key);
+            $value = new TrieEntry($key, $value);
             do {
-                parent::add($key, $data);
+                parent::add($key, $value);
                 $key = substr($key, 1);
             } while ($key > '');
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');
+        }
+    }
+
+    /**
+     * Fetch all child nodes with a value below a specified node
+     *
+     * @param   TrieNode   $trieNode   Node that is our start point for the retrieval
+     * @param   mixed      $prefix     Full Key for the requested start point
+     * @return  Generator       Collection of TrieEntry key/value pairs for all child nodes with a value
+     */
+    protected function getAllChildren(TrieNode $trieNode, $prefix) : Generator
+    {
+        if ($trieNode->value !== null) {
+            foreach ($trieNode->value as $value) {
+                yield $value->key => $value->value;
+            }
+        }
+
+        if (isset($trieNode->children)) {
+            foreach($trieNode->children as $key => $child) {
+                yield from $this->getAllChildren($child, $prefix);
+            }
         }
     }
 }

@@ -22,20 +22,10 @@ class TrieEntry
      * @param mixed $value
      * @param mixed $key
      **/
-    public function __construct($value, $key = null)
+    public function __construct($key, $value = null)
     {
+        $this->key = $key;
         $this->value = $value;
-        $this->key = $key;
-    }
-
-    /**
-     * Allows the key for this entry to be reset
-     *
-     * @param mixed $key
-     **/
-    public function setKey($key = null)
-    {
-        $this->key = $key;
     }
 
     public function __toString()

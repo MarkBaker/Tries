@@ -2,6 +2,8 @@
 
 namespace Tries;
 
+use Generator;
+
 /**
  *
  * RadixTrie class
@@ -12,6 +14,9 @@ namespace Tries;
  */
 class RadixTrie implements ITrie
 {
+    const CREATE_NEW_NODE = true;
+    const DO_NOT_CREATE_NEW_NODE = false;
+
     /**
      * Root-level TrieNode
      *
@@ -28,7 +33,7 @@ class RadixTrie implements ITrie
     }
 
     /**
-     * Adds a new entry to the RadixTrie
+     * Adds a new entry to the Trie
      * If the specified node already exists, then its value will be overwritten
      *
      * @param   mixed   $key     Key for this node entry
@@ -42,11 +47,11 @@ class RadixTrie implements ITrie
     public function add($key, $value = null)
     {
         if ($key > '') {
-            $trieNodeEntry = $this->getTrieNodeByKey($this->trie, $key, true);
-            if ($trieNodeEntry->value === null) {
-                $trieNodeEntry->value = [$value];
+            $trieNode = $this->getTrieNodeByKey($this->trie, $key, self::CREATE_NEW_NODE);
+            if ($trieNode->value === null) {
+                $trieNode->value = [$value];
             } else {
-                $trieNodeEntry->value[] = $value;
+                $trieNode->value[] = $value;
             }
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');
@@ -108,30 +113,6 @@ class RadixTrie implements ITrie
     }
 
     /**
-     * Return an array of key/value pairs for nodes matching a specified prefix
-     *
-     * @param   mixed   $prefix     The key for the node that we want to return
-     * @return  TrieCollection    A collection of Trie Entries for all child nodes that match the prefix value
-     */
-    public function search($prefix)
-    {
-        $trieNode = $this->findTrieNodeByKey($this->trie, $prefix);
-        if (!$trieNode) {
-            return new TrieCollection();
-        }
-
-        return $this->getAllChildren(
-            $trieNode['node'],
-            $prefix,
-            substr(
-                $prefix,
-                0,
-                strlen($prefix) - strlen($trieNode['key'])
-            )
-        );
-    }
-
-    /**
      * Fetch a node that exists at the specified key, or the previous node if no exact match exists
      *
      * @param   TrieNode  $trieNode   Starting node for the search
@@ -171,12 +152,10 @@ class RadixTrie implements ITrie
      * @param   TrieNode  $trieNode   Starting node for the search
      * @param   mixed     $key        The key for the node that we want to find
      * @param   boolean   $create     Flag indicating if we should create new nodes in the RadixTrie as we traverse it
-     * @return  TrieNode | boolean    False if the specified node doesn't exist, and not flagged to create
+     * @return  TrieNode|false   False if the specified node doesn't exist, and not flagged to create
      */
-    protected function getTrieNodeByKey(TrieNode $trieNode, $key, $create = false)
+    private function getTrieNodeByKey(TrieNode $trieNode, $key, $create = self::DO_NOT_CREATE_NEW_NODE)
     {
-        $keyLen = strlen($key);
-
         if (empty($trieNode->children)) {
             if ($create) {
                 $trieNode->children[$key] = new TrieNode();
@@ -185,6 +164,8 @@ class RadixTrie implements ITrie
                 return false;
             }
         }
+
+        $keyLen = strlen($key);
 
         $index = 1;
         while ($index <= $keyLen) {
@@ -242,38 +223,40 @@ class RadixTrie implements ITrie
     }
 
     /**
+     * Return an array of key/value pairs for nodes matching a specified prefix
+     *
+     * @param   mixed   $prefix    The key for the node that we want to return
+     * @return  Generator       Collection of TrieEntry key/value pairs for all child nodes with a value
+     */
+    public function search($prefix) : Generator
+    {
+        $trieNode = $this->getTrieNodeByKey($this->trie, $prefix);
+        if (!$trieNode) {
+            return [];
+        }
+
+        yield from $this->getAllChildren($trieNode, $prefix);
+    }
+
+    /**
      * Fetch all child nodes with a value below a specified node
      *
-     * @param   TrieNode   $trieNode        Node that is our start point for the retrieval
-     * @param   string     $searchPrefix    The prefix that we're searching for
-     * @param   string     $prefix          Full Key for the requested start point
-     * @return  TrieCollection[]            Collection of TrieEntry key/value pairs for all child nodes with a value
+     * @param   TrieNode   $trieNode   Node that is our start point for the retrieval
+     * @param   mixed      $prefix     Full Key for the requested start point
+     * @return  Generator       Collection of TrieEntry key/value pairs for all child nodes with a value
      */
-    protected function getAllChildren(TrieNode $trieNode, $searchPrefix, $prefix)
+    private function getAllChildren(TrieNode $trieNode, $prefix = '') : Generator
     {
-        $collection = new TrieCollection();
         if ($trieNode->value !== null) {
-            if (strpos($prefix, $searchPrefix) === 0) {
-                foreach ($trieNode->value as $value) {
-                    if ($value instanceof TrieEntry) {
-                        $collection->add(clone $value);
-                    } else {
-                        $collection->add(
-                            new TrieEntry($value, $prefix)
-                        );
-                    }
-                }
+            foreach ($trieNode->value as $value) {
+                yield $prefix => $value;
             }
         }
 
         if (isset($trieNode->children)) {
-            foreach ($trieNode->children as $characters => $trie) {
-                $collection->merge(
-                    $this->getAllChildren($trie, $searchPrefix, $prefix . $characters)
-                );
+            foreach($trieNode->children as $key => $child) {
+                yield from $this->getAllChildren($child,  $prefix . $key);
             }
         }
-
-        return $collection;
     }
 }

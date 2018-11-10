@@ -1,6 +1,7 @@
 <?php
 
 namespace Tries;
+use Generator;
 
 /**
  *
@@ -12,6 +13,8 @@ namespace Tries;
  */
 class Trie implements ITrie
 {
+    const CREATE_NEW_NODE = true;
+    const DO_NOT_CREATE_NEW_NODE = false;
 
     /**
      * Root-level TrieNode
@@ -43,11 +46,11 @@ class Trie implements ITrie
     public function add($key, $value = null)
     {
         if ($key > '') {
-            $trieNodeEntry = $this->getTrieNodeByKey($key, true);
-            if ($trieNodeEntry->value === null) {
-                $trieNodeEntry->value = [$value];
+            $trieNode = $this->getTrieNodeByKey($key, self::CREATE_NEW_NODE);
+            if ($trieNode->value === null) {
+                $trieNode->value = [$value];
             } else {
-                $trieNodeEntry->value[] = $value;
+                $trieNode->value[] = $value;
             }
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');
@@ -121,28 +124,13 @@ class Trie implements ITrie
     }
 
     /**
-     * Return an array of key/value pairs for nodes matching a specified prefix
-     *
-     * @param   mixed   $prefix    The key for the node that we want to return
-     * @return  TrieCollection    A collection of Trie Entries for all child nodes that match the prefix value
-     */
-    public function search($prefix)
-    {
-        $trieNode = $this->getTrieNodeByKey($prefix);
-        if (!$trieNode) {
-            return new TrieCollection();
-        }
-        return $this->getAllChildren($trieNode, $prefix);
-    }
-
-    /**
      * Fetch a node that exists at the specified key, or false if it doesn't exist
      *
-     * @param   mixed     $key       The key for the node that we want to find
-     * @param   boolean   $create    Flag indicating if we should create new nodes in the Trie as we traverse it
-     * @return  TrieNode | boolean   False if the specified node doesn't exist, and not flagged to create
+     * @param   mixed     $key              The key for the node that we want to find
+     * @param   boolean   $createNewNode    Flag indicating if we should create new nodes in the Trie as we traverse it
+     * @return  TrieNode|false   False if the specified node doesn't exist, and not flagged to create
      */
-    private function getTrieNodeByKey($key, $create = false)
+    private function getTrieNodeByKey($key, $createNewNode = self::DO_NOT_CREATE_NEW_NODE)
     {
         $trieNode = $this->trie;
         $keyLen = strlen($key);
@@ -151,7 +139,7 @@ class Trie implements ITrie
         while ($index < $keyLen) {
             $character = $key[$index++];
             if (!isset($trieNode->children[$character])) {
-                if ($create) {
+                if ($createNewNode) {
                     $trieNode->children[$character] = new TrieNode();
                 } else {
                     return false;
@@ -164,35 +152,40 @@ class Trie implements ITrie
     }
 
     /**
+     * Return an array of key/value pairs for nodes matching a specified prefix
+     *
+     * @param   mixed   $prefix    The key for the node that we want to return
+     * @return  Generator       Collection of TrieEntry key/value pairs for all child nodes with a value
+     */
+    public function search($prefix) : Generator
+    {
+        $trieNode = $this->getTrieNodeByKey($prefix);
+        if (!$trieNode) {
+            return [];
+        }
+
+        yield from $this->getAllChildren($trieNode, $prefix);
+    }
+
+    /**
      * Fetch all child nodes with a value below a specified node
      *
      * @param   TrieNode   $trieNode   Node that is our start point for the retrieval
      * @param   mixed      $prefix     Full Key for the requested start point
-     * @return  TrieCollection[]       Collection of TrieEntry key/value pairs for all child nodes with a value
+     * @return  Generator       Collection of TrieEntry key/value pairs for all child nodes with a value
      */
-    private function getAllChildren(TrieNode $trieNode, $prefix)
+    protected function getAllChildren(TrieNode $trieNode, $prefix) : Generator
     {
-        $collection = new TrieCollection();
         if ($trieNode->value !== null) {
             foreach ($trieNode->value as $value) {
-                if ($value instanceof TrieEntry) {
-                    $collection->add(clone $value);
-                } else {
-                    $collection->add(
-                        new TrieEntry($value, $prefix)
-                    );
-                }
+                yield $prefix => $value;
             }
         }
 
         if (isset($trieNode->children)) {
-            foreach ($trieNode->children as $character => $trie) {
-                $collection->merge(
-                    $this->getAllChildren($trie, $prefix . $character)
-                );
+            foreach($trieNode->children as $key => $child) {
+                yield from $this->getAllChildren($child, $prefix . $key);
             }
         }
-
-        return $collection;
     }
 }
