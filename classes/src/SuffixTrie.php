@@ -54,7 +54,7 @@ class SuffixTrie extends Trie implements ITrie
         }
 
         if (isset($trieNode->children)) {
-            foreach ($trieNode->children as $key => $child) {
+            foreach ($trieNode->children as $child) {
                 yield from $this->getAllChildren($child, $prefix);
             }
         }
