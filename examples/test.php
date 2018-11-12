@@ -12,6 +12,11 @@ function getData()
         ['cart', 'n. A vehicle for carrying things'],
         ['card', 'n. A piece of thick paper'],
         ['cardigan', 'n. A jumper'],
+        ['carp', 'v. To complain'],
+        ['carp', 'n. A species of fish, not good with chips'],
+        ['carpenter', 'n. A person that mends carps'],
+        ['carpentry', 'n. Complaints by a carpenter'],
+        ['pen', 'A writer'],
     ];
 }
 
@@ -55,5 +60,5 @@ searchTrie($radixTrie, 'car');
 echo PHP_EOL;
 
 $suffixTrie = populateSuffixTrie();
-searchTrie($suffixTrie, 'ar');
+searchTrie($suffixTrie, 'arp');
 echo PHP_EOL;

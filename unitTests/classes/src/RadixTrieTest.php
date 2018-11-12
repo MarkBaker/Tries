@@ -48,10 +48,13 @@ class RadixTrieTest extends TestCase
             $trieObject->add(...$entry);
         }
 
-        foreach ($trieObject->search('') as $key => $value) {
+        $resultCounter = 0;
+        foreach ($trieObject->search('carp') as $key => $value) {
             $this->assertContains($key, array_column($testData, 0));
             $this->assertContains($value, array_column($testData, 1));
+            ++$resultCounter;
         }
+        $this->assertEquals(4, $resultCounter);
     }
 
     private function getTestData()
@@ -62,7 +65,7 @@ class RadixTrieTest extends TestCase
             ['carp', 'v. To complain'],
             ['carp', 'n. A species of fish, not good with chips'],
             ['carpenter', 'n. A person that mends carps'],
-            ['carpentry', 'n. The work done by a carpenter'],
+            ['carpentry', 'n. Complaints made by a carpenter'],
         ];
     }
 }

@@ -48,10 +48,13 @@ class TrieTest extends TestCase
             $trieObject->add(...$entry);
         }
 
-        foreach ($trieObject->search('') as $key => $value) {
+        $resultCounter = 0;
+        foreach ($trieObject->search('car') as $key => $value) {
             $this->assertContains($key, array_column($testData, 0));
             $this->assertContains($value, array_column($testData, 1));
+            ++$resultCounter;
         }
+        $this->assertEquals(3, $resultCounter);
     }
 
     private function getTestData()
