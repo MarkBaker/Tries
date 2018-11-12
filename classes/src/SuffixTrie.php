@@ -6,11 +6,11 @@ use Generator;
 
 /**
  *
- * Trie class
+ * SuffixTrie class
  *
  * @package Tries
  * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
- * @license    http://www.gnu.org/licenses/lgpl-3.0.txt    LGPL
+ * @license    https://opensource.org/licenses/MIT    MIT
  */
 class SuffixTrie extends Trie implements ITrie
 {
@@ -43,7 +43,7 @@ class SuffixTrie extends Trie implements ITrie
      *
      * @param   TrieNode   $trieNode   Node that is our start point for the retrieval
      * @param   mixed      $prefix     Full Key for the requested start point
-     * @return  Generator       Collection of TrieEntry key/value pairs for all child nodes with a value
+     * @return  Generator  Collection of TrieEntry key/value pairs for all child nodes with a value
      */
     protected function getAllChildren(TrieNode $trieNode, $prefix) : Generator
     {

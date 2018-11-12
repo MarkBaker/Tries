@@ -2,6 +2,14 @@
 
 namespace Tries;
 
+/**
+ *
+ * TrieEntry class
+ *
+ * @package Tries
+ * @copyright  Copyright (c) 2013 Mark Baker (https://github.com/MarkBaker/Tries)
+ * @license    https://opensource.org/licenses/MIT    MIT
+ */
 class TrieEntry
 {
     /**

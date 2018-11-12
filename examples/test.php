@@ -17,29 +17,29 @@ function getData()
 
 function populateTrie() {
     $trie = new Tries\Trie();
-    foreach (getData() as [$key, $value]) {
-        $trie->add($key, $value);
+    foreach (getData() as $entry) {
+        $trie->add(...$entry);
     }
     return $trie;
 }
 
 function populateRadixTrie() {
     $trie = new Tries\RadixTrie();
-    foreach (getData() as [$key, $value]) {
-        $trie->add($key, $value);
+    foreach (getData() as $entry) {
+        $trie->add(...$entry);
     }
     return $trie;
 }
 
 function populateSuffixTrie() {
     $trie = new Tries\SuffixTrie();
-    foreach (getData() as [$key, $value]) {
-        $trie->add($key, $value);
+    foreach (getData() as $entry) {
+        $trie->add(...$entry);
     }
     return $trie;
 }
 
-function searchTrie($trie, $prefix)
+function searchTrie(Tries\ITrie $trie, $prefix)
 {
     foreach ($trie->search($prefix) as $key => $value) {
         echo $key, ' => ', $value, PHP_EOL;
