@@ -4,6 +4,7 @@ list(, $searchTerm, $limit) = $argv + array(NULL, '', 8);
 
 // Include the autoloader
 include(__DIR__ . '/../classes/Bootstrap.php');
+include(__DIR__ . '/Collection.php');
 
 
 function buildTries($fileName) {
@@ -38,18 +39,30 @@ function searchTries($search, $tries, $limit) {
 
     if($termcount == 2 && strlen($terms[0]) && strlen($terms[1])) {
         // middle wildcard
-        $straight = $tries['trie']->search(strtolower($terms[0]));
-        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])));
+        $straight = new Collection;
+        foreach ($tries['trie']->search(strtolower($terms[0])) as $key => $value) {
+            $straight->add(new Tries\TrieEntry($key, $value));
+        }
+        $reversed = new Collection;
+        foreach ($tries['rtrie']->search(strrev(strtolower($terms[1]))) as $key => $value) {
+            $reversed->add(new Tries\TrieEntry($key, $value));
+        }
         $straight->intersect($reversed->reverseKeys());
         return $straight->limit($limit);
     } elseif($termcount == 2 && strlen($terms[1]) ) {
         // leading wildcard
-        $reversed = $tries['rtrie']->search(strrev(strtolower($terms[1])));
+        $reversed = new Collection;
+        foreach ($tries['rtrie']->search(strrev(strtolower($terms[1]))) as $key => $value) {
+            $reversed->add(new Tries\TrieEntry($key, $value));
+        }
         $reversed->reverseKeys();
         return $reversed->limit($limit);
     } else {
         // trailing wildcard
-        $straight = $tries['trie']->search(strtolower($terms[0]));
+        $straight = new Collection;
+        foreach ($tries['trie']->search(strtolower($terms[0])) as $key => $value) {
+            $straight->add(new Tries\TrieEntry($key, $value));
+        }
         return $straight->limit($limit);
     }
 }

@@ -4,7 +4,7 @@ list(, $searchName, $limit) = $argv + array(NULL, '', 8);
 
 // Include the autoloader
 include(__DIR__ . '/../classes/Bootstrap.php');
-
+include(__DIR__ . '/Collection.php');
 
 function buildTrie($fileName) {
     $playerData = json_decode(
@@ -36,7 +36,12 @@ echo 'Peak Memory: ', sprintf('%.2f',(memory_get_peak_usage(false) / 1024 )), ' 
 /* Search for the requested names */
 $startTime = microtime(true);
 
-$players = $playerTrie->search(strtolower($searchName));
+
+$players = new Collection;
+foreach ($playerTrie->search(strtolower($searchName)) as $key => $value) {
+    $players->add(new Tries\TrieEntry($key, $value));
+}
+
 if ($players->count() == 0) {
     echo 'No matches found', PHP_EOL;
 } else {
