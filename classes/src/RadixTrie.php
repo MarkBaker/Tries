@@ -14,9 +14,6 @@ use Generator;
  */
 class RadixTrie implements ITrie
 {
-    const CREATE_NEW_NODE = true;
-    const DO_NOT_CREATE_NEW_NODE = false;
-
     /**
      * Root-level TrieNode
      *
@@ -47,7 +44,7 @@ class RadixTrie implements ITrie
     public function add($key, $value = null)
     {
         if ($key > '') {
-            $trieNode = $this->getTrieNodeByKey($this->trie, $key, self::CREATE_NEW_NODE);
+            $trieNode = $this->createTrieNodeByKey($this->trie, $key);
             if ($trieNode->value === null) {
                 $trieNode->value = [$value];
             } else {
@@ -151,18 +148,13 @@ class RadixTrie implements ITrie
      *
      * @param   TrieNode  $trieNode   Starting node for the search
      * @param   mixed     $key        The key for the node that we want to find
-     * @param   boolean   $create     Flag indicating if we should create new nodes in the RadixTrie as we traverse it
-     * @return  TrieNode|false   False if the specified node doesn't exist, and not flagged to create
+     * @return  TrieNode
      */
-    private function getTrieNodeByKey(TrieNode $trieNode, $key, $create = self::DO_NOT_CREATE_NEW_NODE)
+    private function createTrieNodeByKey(TrieNode $trieNode, $key)
     {
         if (empty($trieNode->children)) {
-            if ($create) {
-                $trieNode->children[$key] = new TrieNode();
-                return $trieNode->children[$key];
-            } else {
-                return false;
-            }
+            $trieNode->children[$key] = new TrieNode();
+            return $trieNode->children[$key];
         }
 
         $keyLen = strlen($key);
@@ -172,53 +164,97 @@ class RadixTrie implements ITrie
             $characters = substr($key, 0, $index);
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
-                if ($index == $keyLen) {
+                if ($index === $keyLen) {
                     return $nestedTrieNode;
                 }
                 $key = substr($key, $index);
-                return $this->getTrieNodeByKey($nestedTrieNode, $key, $create);
+                return $this->createTrieNodeByKey($nestedTrieNode, $key);
             }
             ++$index;
         };
 
         if ($index >= $keyLen) {
-            if ($create) {
-                $found = false;
-                foreach ($trieNode->children as $trieNodekey => $child) {
-                    $index = 1;
-                    while (substr($key, 0, $index) == substr($trieNodekey, 0, $index)) {
-                        ++$index;
-                        $found = true;
-                        $splitTrieNode = $child;
-                        $splitTrieKey = substr($trieNodekey, 0, $index-1);
-                    }
-                    if ($found) {
-                        break;
-                    }
-                }
-                if (!$found) {
-                    $trieNode->children[$key] = new TrieNode();
-                    return $trieNode->children[$key];
-                } else {
-                    --$index;
-                    $newTrieNode = new TrieNode();
-                    $characters = substr($characters, $index);
-                    if ($characters !== false) {
-                        $newTrieNode->children[$characters] = new TrieNode();
-                    }
-                    $newSplitKey = substr($trieNodekey, $index);
-                    $newTrieNode->children[$newSplitKey] = $splitTrieNode;
-                    $trieNode->children[$splitTrieKey] = $newTrieNode;
-                    unset($trieNode->children[$trieNodekey]);
-                    if ($characters !== false) {
-                        return $newTrieNode->children[$characters];
-                    } else {
-                        return $newTrieNode;
-                    }
-                }
-            } else {
-                return false;
+            return $this->splitTrieNode($trieNode, $key, $characters);
+        }
+    }
+
+    /**
+     * @param TrieNode $trieNode
+     * @param $key
+     * @param $characters
+     * @return TrieNode
+     */
+    private function splitTrieNode(TrieNode $trieNode, $key, $characters) : TrieNode
+    {
+        $foundNodeToSplit = false;
+        foreach ($trieNode->children as $trieNodekey => $child) {
+            if (substr($key, 0, 1) != substr($trieNodekey, 0, 1)) {
+                continue;
             }
+            $foundNodeToSplit = true;
+            $splitTrieNode = $child;
+            $splitTrieKey = substr($trieNodekey, 0, 1);
+
+            $index = 2;
+            while (substr($key, 0, $index) == substr($trieNodekey, 0, $index)) {
+                $splitTrieKey = substr($trieNodekey, 0, $index++);
+            }
+        }
+
+        if (!$foundNodeToSplit) {
+            $trieNode->children[$key] = new TrieNode();
+            return $trieNode->children[$key];
+        }
+
+        --$index;
+
+        $newTrieNode = new TrieNode();
+        $characters = substr($characters, $index);
+        if ($characters !== false) {
+            $newTrieNode->children[$characters] = new TrieNode();
+        }
+        $newSplitKey = substr($trieNodekey, $index);
+        $newTrieNode->children[$newSplitKey] = $splitTrieNode;
+        $trieNode->children[$splitTrieKey] = $newTrieNode;
+        unset($trieNode->children[$trieNodekey]);
+        if ($characters !== false) {
+            return $newTrieNode->children[$characters];
+        } else {
+            return $newTrieNode;
+        }
+    }
+
+    /**
+     * Fetch a node that exists at the specified key, or false if it doesn't exist
+     *
+     * @param   TrieNode  $trieNode   Starting node for the search
+     * @param   mixed     $key        The key for the node that we want to find
+     * @return  TrieNode|false   False if the specified node doesn't exist
+     */
+    private function getTrieNodeByKey(TrieNode $trieNode, $key)
+    {
+        if (empty($trieNode->children)) {
+            return false;
+        }
+
+        $keyLen = strlen($key);
+
+        $index = 1;
+        while ($index <= $keyLen) {
+            $characters = substr($key, 0, $index);
+            if (isset($trieNode->children[$characters])) {
+                $nestedTrieNode = $trieNode->children[$characters];
+                if ($index === $keyLen) {
+                    return $nestedTrieNode;
+                }
+                $key = substr($key, $index);
+                return $this->getTrieNodeByKey($nestedTrieNode, $key);
+            }
+            ++$index;
+        };
+
+        if ($index >= $keyLen) {
+            return false;
         }
     }
 

@@ -52,11 +52,11 @@ function searchTrie(Tries\ITrie $trie, $prefix)
 }
 
 $trie = populateTrie();
-searchTrie($trie, 'car');
+searchTrie($trie, 'carp');
 echo PHP_EOL;
 
 $radixTrie = populateRadixTrie();
-searchTrie($radixTrie, 'car');
+searchTrie($radixTrie, 'carp');
 echo PHP_EOL;
 
 $suffixTrie = populateSuffixTrie();

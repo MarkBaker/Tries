@@ -14,9 +14,6 @@ use Generator;
  */
 class Trie implements ITrie
 {
-    const CREATE_NEW_NODE = true;
-    const DO_NOT_CREATE_NEW_NODE = false;
-
     /**
      * Root-level TrieNode
      *
@@ -47,7 +44,7 @@ class Trie implements ITrie
     public function add($key, $value = null)
     {
         if ($key > '') {
-            $trieNode = $this->getTrieNodeByKey($key, self::CREATE_NEW_NODE);
+            $trieNode = $this->createTrieNodeByKey($key);
             if ($trieNode->value === null) {
                 $trieNode->value = [$value];
             } else {
@@ -125,13 +122,12 @@ class Trie implements ITrie
     }
 
     /**
-     * Fetch a node that exists at the specified key, or false if it doesn't exist
+     * Create a node for the specified key
      *
      * @param   mixed     $key              The key for the node that we want to find
-     * @param   boolean   $createNewNode    Flag indicating if we should create new nodes in the Trie as we traverse it
-     * @return  TrieNode|false   False if the specified node doesn't exist, and not flagged to create
+     * @return  TrieNode
      */
-    private function getTrieNodeByKey($key, $createNewNode = self::DO_NOT_CREATE_NEW_NODE)
+    private function createTrieNodeByKey($key)
     {
         $trieNode = $this->trie;
         $keyLen = strlen($key);
@@ -140,11 +136,30 @@ class Trie implements ITrie
         while ($index < $keyLen) {
             $character = $key[$index++];
             if (!isset($trieNode->children[$character])) {
-                if ($createNewNode) {
-                    $trieNode->children[$character] = new TrieNode();
-                } else {
-                    return false;
-                }
+                $trieNode->children[$character] = new TrieNode();
+            }
+            $trieNode = $trieNode->children[$character];
+        };
+
+        return $trieNode;
+    }
+
+    /**
+     * Fetch a node that exists at the specified key, or false if it doesn't exist
+     *
+     * @param   mixed     $key              The key for the node that we want to find
+     * @return  TrieNode|false   False if the specified node doesn't exist
+     */
+    private function getTrieNodeByKey($key)
+    {
+        $trieNode = $this->trie;
+        $keyLen = strlen($key);
+
+        $index = 0;
+        while ($index < $keyLen) {
+            $character = $key[$index++];
+            if (!isset($trieNode->children[$character])) {
+                return false;
             }
             $trieNode = $trieNode->children[$character];
         };
