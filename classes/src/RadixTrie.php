@@ -173,9 +173,7 @@ class RadixTrie implements ITrie
             ++$index;
         };
 
-        if ($index >= $keyLen) {
-            return $this->splitTrieNode($trieNode, $key, $characters);
-        }
+        return $this->splitTrieNode($trieNode, $key, $characters);
     }
 
     /**
@@ -219,9 +217,9 @@ class RadixTrie implements ITrie
         unset($trieNode->children[$trieNodekey]);
         if ($characters !== false) {
             return $newTrieNode->children[$characters];
-        } else {
-            return $newTrieNode;
         }
+
+        return $newTrieNode;
     }
 
     /**
@@ -253,9 +251,7 @@ class RadixTrie implements ITrie
             ++$index;
         };
 
-        if ($index >= $keyLen) {
-            return false;
-        }
+        return false;
     }
 
     /**
