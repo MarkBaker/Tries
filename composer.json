@@ -12,17 +12,16 @@
         }
     ],
     "require": {
-        "php": "^7.0.0"
+        "php": "^7.2"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "3.3.2",
-        "phpmd/phpmd": "2.6.0",
-        "phpunit/phpunit": "^5.4.0",
-        "phpdocumentor/phpdocumentor":"2.*",
-        "sebastian/phpcpd": "2.*",
-        "phploc/phploc": "2.*",
-        "phpcompatibility/php-compatibility": "^8.0",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3"
+        "phpunit/phpunit": "^8.4@dev",
+        "squizlabs/php_codesniffer": "^3.0@dev",
+        "phpmd/phpmd": "dev-master",
+        "sebastian/phpcpd": "^4.1",
+        "phploc/phploc": "^5.0@dev",
+        "phpcompatibility/php-compatibility": "dev-master",
+        "dealerdirect/phpcodesniffer-composer-installer": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -30,21 +29,13 @@
         }
     },
     "scripts": {
-        "style": [
-            "phpcs --report-width=200 --report-summary  --report-full classes/src/ --standard=PSR2 -n"
-        ],
-        "mess": [
-            "phpmd classes/src/ xml codesize,unusedcode,design,naming -n"
-        ],
-        "lines": [
-            "phploc classes/src/ -n"
-        ],
-        "cpd": [
-            "phpcpd classes/src/ -n"
-        ],
-        "versions": [
-            "phpcs --report-width=200 --report-summary  --report-full classes/src/ --standard=PHPCompatibility --runtime-set testVersion 7.0- -n"
-        ]
+        "style": "phpcs --report-width=200 --report-summary  --report-full classes/src/ --standard=PSR2 -n",
+        "test": "phpunit -c phpunit.xml.dist",
+        "mess": "phpmd classes/src/ xml codesize,unusedcode,design,naming -n",
+        "lines": "phploc classes/src/ -n",
+        "cpd": "phpcpd classes/src/ -n",
+        "versions": "phpcs --report-width=200 --report-summary  --report-full classes/src/ --standard=PHPCompatibility --runtime-set testVersion 7.0- -n",
+        "coverage": "phpunit -c phpunit.xml.dist --coverage-text --coverage-html ./build/coverage"
     },
     "minimum-stability": "dev"
 }
