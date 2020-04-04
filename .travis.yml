@@ -1,9 +1,6 @@
 sudo: false
+dist: xenial
 
-dist: trusty
-
-cache:
-  apt: true
 
 language: php
 
@@ -17,15 +14,15 @@ cache:
 
 php:
   - 7.1
-  - 7.4snapshot
+  - 7.2
   - nightly
 
 matrix:
   fast_finish: true
   include:
-    - php: 7.2
-      env: EXTRA_CHECKS=1
     - php: 7.3
+      env: EXTRA_CHECKS=1
+    - php: 7.4
       env: COVERAGE=1
     - php: 7.0
       env: COVERAGE=1
@@ -64,8 +61,6 @@ script:
   - if [[ "$EXTRA_CHECKS" == "1" ]]; then ./vendor/bin/phpmd ./classes/src/ text ./phpmd.xml.dist; fi
   ## PHPLOC
   - if [[ "$EXTRA_CHECKS" == "1" ]]; then ./vendor/bin/phploc ./classes/src/; fi
-  ## PHPDocumentor
-  ## - if [[ "$EXTRA_CHECKS" == "1" ]]; then ./vendor/bin/phpdoc -q -d ./classes/src -t ./build/docs --template="responsive-twig"; fi
 
 notifications:
   email: false
