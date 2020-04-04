@@ -13,18 +13,16 @@ cache:
     - $HOME/.cache/composer/files
 
 php:
-  - 7.1
-  - 7.2
   - nightly
 
 matrix:
   fast_finish: true
   include:
+    - 7.2
+      env: COVERAGE=1
     - php: 7.3
       env: EXTRA_CHECKS=1
     - php: 7.4
-      env: COVERAGE=1
-    - php: 7.0
       env: COVERAGE=1
   allow_failures:
     - php: nightly
