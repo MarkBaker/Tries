@@ -31,7 +31,7 @@ class SuffixTrie extends Trie implements ITrie
             $value = new TrieEntry($key, $value);
             do {
                 parent::add($key, $value);
-                $key = substr($key, 1);
+                $key = mb_substr($key, 1);
             } while ($key > '');
         } else {
             throw new \InvalidArgumentException('Key value must not be empty');

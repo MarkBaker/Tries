@@ -66,6 +66,7 @@ class RadixTrieTest extends TestCase
             ['carp', 'n. A species of fish, not good with chips'],
             ['carpenter', 'n. A person that mends carps'],
             ['carpentry', 'n. Complaints made by a carpenter'],
+            ['gęś', 'Zażółć gęślą jaźń']
         ];
     }
 }

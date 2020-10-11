@@ -64,6 +64,7 @@ class TrieTest extends TestCase
             ['car', 'n. A motor vehicle'],
             ['cart', 'v. To carry awkwardly'],
             ['cart', 'n. A vehicle for carrying things'],
+            ['gęś', 'Zażółć gęślą jaźń'],
         ];
     }
 }
