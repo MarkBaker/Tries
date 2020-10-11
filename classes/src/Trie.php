@@ -3,6 +3,7 @@
 namespace Tries;
 
 use Generator;
+use Tries\Helpers\StringHelper;
 
 /**
  *
@@ -130,16 +131,14 @@ class Trie implements ITrie
     private function createTrieNodeByKey($key)
     {
         $trieNode = $this->trie;
-        $keyLen = strlen($key);
+        $characters = StringHelper::stringToArray($key);
 
-        $index = 0;
-        while ($index < $keyLen) {
-            $character = $key[$index++];
+        foreach ($characters as $character) {
             if (!isset($trieNode->children[$character])) {
                 $trieNode->children[$character] = new TrieNode();
             }
             $trieNode = $trieNode->children[$character];
-        };
+        }
 
         return $trieNode;
     }
@@ -153,16 +152,14 @@ class Trie implements ITrie
     private function getTrieNodeByKey($key)
     {
         $trieNode = $this->trie;
-        $keyLen = strlen($key);
+        $characters = StringHelper::stringToArray($key);
 
-        $index = 0;
-        while ($index < $keyLen) {
-            $character = $key[$index++];
+        foreach ($characters as $character) {
             if (!isset($trieNode->children[$character])) {
                 return false;
             }
             $trieNode = $trieNode->children[$character];
-        };
+        }
 
         return $trieNode;
     }

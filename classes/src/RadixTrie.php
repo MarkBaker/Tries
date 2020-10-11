@@ -3,6 +3,7 @@
 namespace Tries;
 
 use Generator;
+use Tries\Helpers\StringHelper;
 
 /**
  *
@@ -119,11 +120,11 @@ class RadixTrie implements ITrie
      */
     protected function findTrieNodeByKey(TrieNode $trieNode, $key)
     {
-        $keyLen = strlen($key);
-
         $index = 1;
+        $charactersArr = StringHelper::stringToArray($key);
+        $keyLen = count($charactersArr);
         while ($index <= $keyLen) {
-            $characters = substr($key, 0, $index);
+            $characters = implode('', array_slice($charactersArr, 0, $index));
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
                 if ($index == $keyLen) {
@@ -157,11 +158,12 @@ class RadixTrie implements ITrie
             return $trieNode->children[$key];
         }
 
-        $keyLen = strlen($key);
-
         $index = 1;
+        $charactersArr = StringHelper::stringToArray($key);
+        $keyLen = count($charactersArr);
+
         while ($index <= $keyLen) {
-            $characters = substr($key, 0, $index);
+            $characters = implode('', array_slice($charactersArr, 0, $index));
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
                 if ($index === $keyLen) {
@@ -235,11 +237,12 @@ class RadixTrie implements ITrie
             return false;
         }
 
-        $keyLen = strlen($key);
-
         $index = 1;
+        $charactersArr = StringHelper::stringToArray($key);
+        $keyLen = count($charactersArr);
+
         while ($index <= $keyLen) {
-            $characters = substr($key, 0, $index);
+            $characters = implode('', array_slice($charactersArr, 0, $index));
             if (isset($trieNode->children[$characters])) {
                 $nestedTrieNode = $trieNode->children[$characters];
                 if ($index === $keyLen) {
